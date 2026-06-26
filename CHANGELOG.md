@@ -3,6 +3,24 @@
 All notable changes, decisions, and approaches (including rejected ones) are
 recorded here so the project's history is traceable.
 
+## [0.4.0] — New 3D logo + theme switcher
+
+### Branding
+- Adopted the user-provided **3D graduate-cat** artwork. `KidKat Image 2` →
+  full-bleed app icon; `KidKat 3` → background flood-filled to a **transparent
+  cat** (interior whites like eyes/whiskers preserved) used for the Android
+  adaptive foreground and native splash. Source art kept in `assets/branding/source`.
+
+### Theme switcher 🎨
+- Five colorful themes: **Purple Pop, Candy Bright, Ocean, Sunset, Forest**
+  (`AppPalette` + `ThemeId`), persisted on `ParentConfig`.
+- App theme, brand gradients (welcome/break/time-up) and a new **colorful kid
+  home backdrop** (soft floating shapes) all react to the selected palette.
+- Theme picker with live gradient swatches in Parent settings.
+
+### Quality
+- 42 passing tests (added `themeId` persistence), `flutter analyze` clean.
+
 ## [0.3.0] — Swipe navigation, age-appropriate channels, bigger logo
 
 ### Player: swipe + previous/next + back

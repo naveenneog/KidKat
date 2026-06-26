@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:kidkat/core/palette.dart';
 import 'package:kidkat/data/models/allowlisted_channel.dart';
 import 'package:kidkat/data/models/parent_config.dart';
 
@@ -12,6 +13,7 @@ void main() {
         sessionVideoCount: 6,
         shortLength: ShortLength.shortsOnly,
         ageBand: AgeBand.tween,
+        themeId: ThemeId.candyBright,
         selectedTopicIds: ['science', 'math'],
         allowlist: [
           AllowlistedChannel(title: 'SciShow Kids', query: 'SciShow Kids', id: 'ch1'),
@@ -28,6 +30,7 @@ void main() {
       expect(decoded.sessionVideoCount, 6);
       expect(decoded.shortLength, ShortLength.shortsOnly);
       expect(decoded.ageBand, AgeBand.tween);
+      expect(decoded.themeId, ThemeId.candyBright);
       expect(decoded.selectedTopicIds, ['science', 'math']);
       expect(decoded.allowlist.length, 1);
       expect(decoded.allowlist.first.id, 'ch1');
@@ -61,6 +64,7 @@ void main() {
       expect(config.sessionVideoCount, 8);
       expect(config.safeSearchStrict, true);
       expect(config.ageBand, AgeBand.early);
+      expect(config.themeId, ThemeId.defaultPurple);
       expect(config.selectedTopicIds, isNotEmpty);
     });
   });
