@@ -1,6 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kidkat/data/curation_service.dart';
 import 'package:kidkat/data/models/kid_video.dart';
+import 'package:kidkat/data/models/parent_config.dart';
+import 'package:kidkat/data/models/topic.dart';
 
 KidVideo v(
   String id, {
@@ -82,6 +84,18 @@ void main() {
         allowlistChannelIds: {},
       );
       expect(out.map((e) => e.id), ['a', 'b']);
+    });
+  });
+
+  group('CurationService.ageQuery', () {
+    test('appends the age band qualifier', () {
+      final science = topicById('science')!;
+      expect(CurationService.ageQuery(science, AgeBand.preschool),
+          'Science for preschoolers');
+      expect(CurationService.ageQuery(science, AgeBand.early),
+          'Science for kids');
+      expect(CurationService.ageQuery(science, AgeBand.tween),
+          'Science for students');
     });
   });
 }

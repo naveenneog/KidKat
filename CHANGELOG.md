@@ -3,6 +3,31 @@
 All notable changes, decisions, and approaches (including rejected ones) are
 recorded here so the project's history is traceable.
 
+## [0.3.0] — Swipe navigation, age-appropriate channels, bigger logo
+
+### Player: swipe + previous/next + back
+- Added **vertical swipe** in the full-screen player: swipe **up = next**,
+  **down = previous** (kids' Shorts muscle memory). Plus explicit **Back/Next**
+  buttons (Back disabled on the first video) and a top **✕** to exit.
+- Android system back is handled via `PopScope` (exits to home, restoring system
+  bars). A brief auto-hiding swipe hint guides first-time users.
+
+### Age-appropriate content
+- New **AgeBand** (Preschool 3–5 / Early 6–8 / Tween 9–12) on `ParentConfig`.
+- Onboarding now asks the child's age and **pre-fills age-appropriate trusted
+  channels** (e.g. Khan Academy Kids/StoryBots/Numberblocks for preschool;
+  SciShow Kids/Nat Geo Kids for early; TED-Ed/Crash Course for tweens).
+- Curation biases search queries by age (`ageQuery`) and the dashboard's
+  quick-add channels + a new **Child age** section reflect the band. Capped
+  allowlist channel searches per session to bound API quota.
+
+### Branding
+- Enlarged the cat further (icon 1.28→1.42×, adaptive foreground 0.82→0.92) so it
+  fills the icon/launcher. Regenerated icons + splash.
+
+### Quality
+- 42 passing tests (added `ageQuery` + `ageBand` cases), `flutter analyze` clean.
+
 ## [0.2.0] — Full-screen shorts + guided API setup + bigger logo
 
 ### Full-screen Shorts player

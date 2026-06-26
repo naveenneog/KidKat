@@ -228,7 +228,7 @@
       <div class="feat"><div class="fic" style="background:rgba(46,196,166,.14)">⏱️</div><h3>Daily time limit</h3><p>When time’s up, the app locks until tomorrow. Parents can extend.</p></div>
       <div class="feat"><div class="fic" style="background:rgba(255,154,46,.16)">📺</div><h3>Full-screen shorts</h3><p>Immersive full-screen playback. Advancing is a deliberate tap, never a swipe; related videos stay on-channel.</p></div>
       <div class="feat"><div class="fic" style="background:rgba(255,111,165,.14)">🔒</div><h3>Parent PIN gate</h3><p>All settings are protected behind a 4-digit parent PIN.</p></div>
-      <div class="feat"><div class="fic" style="background:rgba(92,124,250,.14)">✅</div><h3>Approved channels</h3><p>One-tap trusted channels (SciShow Kids, TED-Ed, Nat Geo Kids…) or add your own.</p></div>
+      <div class="feat"><div class="fic" style="background:rgba(92,124,250,.14)">🧒</div><h3>Age-appropriate channels</h3><p>Set your child's age (3–5, 6–8, 9–12) and KidKat pre-loads trusted channels and tailors searches to fit.</p></div>
       <div class="feat"><div class="fic" style="background:rgba(255,210,63,.22)">🎓</div><h3>12 learning topics</h3><p>Science, Space, Animals, Math, Reading, Art, Coding, and more.</p></div>
       <div class="feat"><div class="fic" style="background:rgba(25,200,255,.14)">🛡️</div><h3>Strict Safe Search</h3><p>Embeddable-only, short-only (≤1 or ≤4 min), category-filtered.</p></div>
       <div class="feat"><div class="fic" style="background:rgba(45,33,80,.10)">📱</div><h3>Android &amp; iOS</h3><p>One Flutter codebase. Riverpod, go_router, official IFrame player.</p></div>
@@ -293,6 +293,10 @@
               <div style="position:absolute;inset:0;display:grid;place-items:center">
                 <div class="playg" style="opacity:.9"></div>
               </div>
+              <!-- swipe hint -->
+              <div style="position:absolute;left:0;right:0;top:58%;display:flex;justify-content:center">
+                <div style="background:rgba(0,0,0,.5);padding:7px 12px;border-radius:16px;font-size:11px;font-weight:600;display:flex;gap:6px;align-items:center">↕ Swipe up next · down to go back</div>
+              </div>
               <!-- top overlay -->
               <div style="position:absolute;top:0;left:0;right:0;padding:10px 14px 26px;background:linear-gradient(to bottom,rgba(0,0,0,.6),transparent)">
                 <div class="sbar" style="padding:0 0 8px"><span>9:41</span><span class="dots"><i></i><i></i><i></i></span></div>
@@ -307,7 +311,7 @@
                 <div class="vtitle">How do volcanoes erupt? 🌋</div>
                 <div class="vchan" style="display:flex;align-items:center;gap:5px;color:#cfd8ff">✅ SciShow Kids</div>
                 <div class="prog" style="margin:12px 0"><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-                <div style="display:flex;gap:10px"><div class="ghbtn">✓ I'm done</div><div class="obtn">Next ⏭</div></div>
+                <div style="display:flex;gap:10px"><div class="ghbtn">⟵ Back</div><div class="obtn">Next ⟶</div></div>
               </div>
             </div>
           </div>

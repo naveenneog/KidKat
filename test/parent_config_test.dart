@@ -11,6 +11,7 @@ void main() {
         dailyLimitMinutes: 45,
         sessionVideoCount: 6,
         shortLength: ShortLength.shortsOnly,
+        ageBand: AgeBand.tween,
         selectedTopicIds: ['science', 'math'],
         allowlist: [
           AllowlistedChannel(title: 'SciShow Kids', query: 'SciShow Kids', id: 'ch1'),
@@ -26,6 +27,7 @@ void main() {
       expect(decoded.dailyLimitMinutes, 45);
       expect(decoded.sessionVideoCount, 6);
       expect(decoded.shortLength, ShortLength.shortsOnly);
+      expect(decoded.ageBand, AgeBand.tween);
       expect(decoded.selectedTopicIds, ['science', 'math']);
       expect(decoded.allowlist.length, 1);
       expect(decoded.allowlist.first.id, 'ch1');
@@ -58,6 +60,7 @@ void main() {
       expect(config.dailyLimitMinutes, 30);
       expect(config.sessionVideoCount, 8);
       expect(config.safeSearchStrict, true);
+      expect(config.ageBand, AgeBand.early);
       expect(config.selectedTopicIds, isNotEmpty);
     });
   });
