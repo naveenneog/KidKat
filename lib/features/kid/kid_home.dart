@@ -125,6 +125,11 @@ class _TopBar extends StatelessWidget {
             ),
           ),
           IconButton(
+            tooltip: 'Saved videos',
+            onPressed: () => context.go('/saved'),
+            icon: const Icon(Icons.bookmark_rounded, color: KidColors.purple),
+          ),
+          IconButton(
             tooltip: 'Parents',
             onPressed: () => context.go('/gate'),
             icon: const Icon(Icons.lock_outline_rounded,

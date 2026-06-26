@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'curation_service.dart';
 import 'local_store.dart';
 import 'models/allowlisted_channel.dart';
+import 'models/kid_video.dart';
 import 'models/parent_config.dart';
 import 'youtube_api.dart';
 import '../core/constants.dart';
@@ -178,6 +179,58 @@ final remainingSecondsProvider = Provider<int>((ref) {
   final remaining = (limit * 60) - watched;
   return remaining < 0 ? 0 : remaining;
 });
+
+/// Ids of videos the child has already watched, so they can be omitted from
+/// future sessions.
+final watchedIdsProvider =
+    StateNotifierProvider<WatchedIdsNotifier, Set<String>>(
+  (ref) => WatchedIdsNotifier(ref.watch(localStoreProvider)),
+);
+
+class WatchedIdsNotifier extends StateNotifier<Set<String>> {
+  WatchedIdsNotifier(this._store) : super(_store.watchedIds());
+  final LocalStore _store;
+
+  Future<void> markWatched(Iterable<String> ids) async {
+    await _store.addWatchedIds(ids);
+    state = _store.watchedIds();
+  }
+
+  Future<void> clear() async {
+    await _store.clearWatchedIds();
+    state = <String>{};
+  }
+}
+
+/// Bookmarked / saved videos.
+final savedVideosProvider =
+    StateNotifierProvider<SavedVideosNotifier, List<KidVideo>>(
+  (ref) => SavedVideosNotifier(ref.watch(localStoreProvider)),
+);
+
+class SavedVideosNotifier extends StateNotifier<List<KidVideo>> {
+  SavedVideosNotifier(this._store) : super(_store.savedVideos());
+  final LocalStore _store;
+
+  bool contains(String id) => state.any((v) => v.id == id);
+
+  Future<void> toggle(KidVideo video) async {
+    final list = [...state];
+    if (list.any((e) => e.id == video.id)) {
+      list.removeWhere((e) => e.id == video.id);
+    } else {
+      list.insert(0, video);
+    }
+    await _store.saveSavedVideos(list);
+    state = list;
+  }
+
+  Future<void> remove(String id) async {
+    final list = state.where((e) => e.id != id).toList();
+    await _store.saveSavedVideos(list);
+    state = list;
+  }
+}
 
 @visibleForTesting
 ProviderContainer debugContainer() => ProviderContainer();
