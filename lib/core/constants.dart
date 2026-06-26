@@ -18,6 +18,11 @@ class KidKat {
   static const Set<String> educationalCategoryIds = {'27', '28'};
 }
 
+/// Debug helper: when built with `--dart-define=KIDKAT_DEMO=true`, the app marks
+/// itself onboarded and boots straight into the demo player so the full-screen
+/// player + gestures can be exercised on an emulator without an API key.
+const bool kDemoBoot = bool.fromEnvironment('KIDKAT_DEMO');
+
 /// A trusted, kid-appropriate educational channel parents can add quickly.
 /// We resolve the live channelId at runtime via the API (by [query]) so we
 /// never ship stale/incorrect ids.

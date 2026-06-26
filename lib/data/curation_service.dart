@@ -6,6 +6,28 @@ import 'models/parent_config.dart';
 import 'models/topic.dart';
 import 'youtube_api.dart';
 
+/// A small built-in playlist used **only for debug testing** (and when no API
+/// key is set in a debug build) so the player + gestures can be exercised
+/// without configuring a YouTube Data API key. Big Buck Bunny is an open,
+/// kid-friendly film; the rest are popular, reliably embeddable clips.
+final List<KidVideo> kDemoVideos = [
+  _demo('aqz-KE-bpKQ', 'Big Buck Bunny (demo)', 'Blender Foundation'),
+  _demo('dQw4w9WgXcQ', 'Demo clip 2', 'Demo'),
+  _demo('9bZkp7q19f0', 'Demo clip 3', 'Demo'),
+  _demo('e-ORhEE9VVg', 'Demo clip 4', 'Demo'),
+  _demo('kJQP7kiw5Fk', 'Demo clip 5', 'Demo'),
+  _demo('60ItHLz5WEA', 'Demo clip 6', 'Demo'),
+];
+
+KidVideo _demo(String id, String title, String channel) => KidVideo(
+      id: id,
+      title: title,
+      channelId: 'demo',
+      channelTitle: channel,
+      thumbnailUrl: 'https://i.ytimg.com/vi/$id/hqdefault.jpg',
+      durationSeconds: 60,
+    );
+
 /// Builds a **finite** queue of educational shorts for one kid session.
 ///
 /// This is KidKat's own curation — it does not read or alter YouTube's
@@ -44,7 +66,14 @@ class CurationService {
     List<String>? topicIds,
     Random? random,
     void Function(List<dynamic> resolvedAllowlist)? onAllowlistResolved,
+    bool demo = false,
+    Set<String> exclude = const {},
   }) async {
+    if (demo) {
+      final list = List<KidVideo>.from(kDemoVideos);
+      list.shuffle(random ?? Random());
+      return list.take(config.sessionVideoCount).toList();
+    }
     if (config.apiKey.trim().isEmpty) {
       throw ArgumentError('A YouTube Data API key is required.');
     }
@@ -110,22 +139,27 @@ class CurationService {
       candidates,
       maxDurationSeconds: config.maxDurationSeconds,
       allowlistChannelIds: allowlistIds,
+      exclude: exclude,
     );
 
     filtered.shuffle(random ?? Random());
     return filtered.take(config.sessionVideoCount).toList();
   }
 
-  /// Pure, testable filter: keeps short, de-duplicated, educational videos.
+  /// Pure, testable filter: keeps short, de-duplicated, educational videos and
+  /// omits any video whose id is in [exclude] (e.g. already-watched videos).
   static List<KidVideo> filterEducational(
     List<KidVideo> videos, {
     required int maxDurationSeconds,
     required Set<String> allowlistChannelIds,
+    Set<String> exclude = const {},
   }) {
     final seen = <String>{};
     final out = <KidVideo>[];
     for (final v in videos) {
-      if (v.id.isEmpty || seen.contains(v.id)) continue;
+      if (v.id.isEmpty || seen.contains(v.id) || exclude.contains(v.id)) {
+        continue;
+      }
       if (v.durationSeconds <= 0 || v.durationSeconds > maxDurationSeconds) {
         continue;
       }

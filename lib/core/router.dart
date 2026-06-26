@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../data/models/session_args.dart';
 import '../data/providers.dart';
 import '../features/kid/break_screen.dart';
 import '../features/kid/kid_home.dart';
+import '../features/kid/saved_screen.dart';
 import '../features/kid/session_screen.dart';
 import '../features/kid/time_up_screen.dart';
 import '../features/onboarding/onboarding_screen.dart';
 import '../features/parent/parent_dashboard.dart';
 import '../features/parent/parent_gate.dart';
+import 'constants.dart';
 import 'theme.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -19,7 +22,7 @@ final routerProvider = Provider<GoRouter>((ref) {
   ref.onDispose(refresh.dispose);
 
   return GoRouter(
-    initialLocation: '/',
+    initialLocation: kDemoBoot ? '/session' : '/',
     refreshListenable: refresh,
     redirect: (context, state) {
       final onboarded = ref.read(onboardedProvider);
@@ -42,10 +45,18 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, _) => const OnboardingScreen(),
       ),
       GoRoute(path: '/home', builder: (_, _) => const KidHome()),
+      GoRoute(path: '/saved', builder: (_, _) => const SavedScreen()),
       GoRoute(
         path: '/session',
-        builder: (_, state) =>
-            SessionScreen(topicIds: state.extra as List<String>?),
+        builder: (_, state) {
+          final args = state.extra;
+          if (args is SessionArgs) {
+            return SessionScreen(
+                topicIds: args.topicIds, videos: args.videos);
+          }
+          if (args is List<String>) return SessionScreen(topicIds: args);
+          return const SessionScreen();
+        },
       ),
       GoRoute(path: '/break', builder: (_, _) => const BreakScreen()),
       GoRoute(path: '/timeup', builder: (_, _) => const TimeUpScreen()),

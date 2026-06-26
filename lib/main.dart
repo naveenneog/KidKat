@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app.dart';
+import 'core/constants.dart';
 import 'data/local_store.dart';
 import 'data/providers.dart';
 
@@ -14,6 +15,7 @@ Future<void> main() async {
   ]);
 
   final store = await LocalStore.create();
+  if (kDemoBoot) await store.setOnboarded(true);
 
   runApp(
     ProviderScope(
