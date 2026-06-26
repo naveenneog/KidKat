@@ -24,8 +24,9 @@ class KidHome extends ConsumerWidget {
     final locked = remaining <= 0;
 
     return Scaffold(
-      body: SafeArea(
-        child: Column(
+      body: KidBackdrop(
+        child: SafeArea(
+          child: Column(
           children: [
             _TopBar(remaining: remaining),
             Expanded(
@@ -83,6 +84,7 @@ class KidHome extends ConsumerWidget {
               ),
           ],
         ),
+      ),
       ),
     );
   }

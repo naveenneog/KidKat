@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/constants.dart';
+import '../../core/palette.dart';
 import '../../core/theme.dart';
 import '../../data/models/allowlisted_channel.dart';
 import '../../data/models/parent_config.dart';
@@ -55,6 +56,30 @@ class _ParentDashboardState extends ConsumerState<ParentDashboard> {
                     selected: config.selectedTopicIds.contains(t.id),
                     onSelected: (_) => notifier.toggleTopic(t.id),
                   ),
+              ],
+            ),
+          ),
+          _Section(
+            title: 'App theme',
+            icon: Icons.palette_rounded,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Pick a colorful theme for KidKat.',
+                    style: TextStyle(fontSize: 13)),
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: [
+                    for (final p in kPalettes.values)
+                      _ThemeSwatch(
+                        palette: p,
+                        selected: config.themeId == p.id,
+                        onTap: () => notifier.setThemeId(p.id),
+                      ),
+                  ],
+                ),
               ],
             ),
           ),
@@ -369,6 +394,58 @@ class _Stepper extends StatelessWidget {
             onPressed: onPlus,
             icon: const Icon(Icons.add_rounded),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ThemeSwatch extends StatelessWidget {
+  const _ThemeSwatch({
+    required this.palette,
+    required this.selected,
+    required this.onTap,
+  });
+  final AppPalette palette;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 88,
+            height: 60,
+            decoration: BoxDecoration(
+              gradient: palette.brandGradient,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: selected ? palette.primary : Colors.black12,
+                width: selected ? 3 : 1.5,
+              ),
+              boxShadow: selected
+                  ? [
+                      BoxShadow(
+                          color: palette.primary.withValues(alpha: 0.4),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4))
+                    ]
+                  : null,
+            ),
+            child: selected
+                ? const Icon(Icons.check_circle, color: Colors.white, size: 24)
+                : null,
+          ),
+          const SizedBox(height: 6),
+          Text('${palette.emoji} ${palette.name}',
+              style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+                  color: selected ? palette.primary : KidColors.ink)),
         ],
       ),
     );

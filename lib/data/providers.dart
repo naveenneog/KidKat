@@ -9,6 +9,7 @@ import 'models/allowlisted_channel.dart';
 import 'models/parent_config.dart';
 import 'youtube_api.dart';
 import '../core/constants.dart';
+import '../core/palette.dart';
 
 /// Provides the [LocalStore]. Overridden in `main()` after async init.
 final localStoreProvider = Provider<LocalStore>(
@@ -61,6 +62,9 @@ class ParentConfigNotifier extends StateNotifier<ParentConfig> {
 
   Future<void> setAgeBand(AgeBand band) =>
       _update(state.copyWith(ageBand: band));
+
+  Future<void> setThemeId(ThemeId id) =>
+      _update(state.copyWith(themeId: id));
 
   /// Adds the recommended channels for the given age band that aren't already
   /// on the allowlist.
@@ -132,6 +136,12 @@ final youTubeApiProvider = Provider<YouTubeApi>((ref) {
   final client = ref.watch(httpClientProvider);
   return YouTubeApi(apiKey: apiKey, client: client);
 });
+
+/// The active color palette, derived from the selected theme.
+final paletteProvider = Provider<AppPalette>(
+  (ref) =>
+      paletteFor(ref.watch(parentConfigProvider.select((c) => c.themeId))),
+);
 
 final curationServiceProvider = Provider<CurationService>(
   (ref) => CurationService(ref.watch(youTubeApiProvider)),

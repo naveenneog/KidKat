@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// KidKat brand palette and Material theme. Bright, rounded and friendly.
+import 'palette.dart';
+
+/// KidKat default brand colors. Individual screens may also read the active
+/// [AppPalette] (via `paletteProvider`) for theme-aware coloring.
 class KidColors {
   static const Color purple = Color(0xFF7C4DFF);
   static const Color blue = Color(0xFF5C7CFA);
@@ -20,15 +23,15 @@ class KidColors {
   );
 }
 
-ThemeData buildKidKatTheme() {
+ThemeData buildKidKatTheme(AppPalette p) {
   final base = ThemeData(
     colorScheme: ColorScheme.fromSeed(
-      seedColor: KidColors.purple,
-      primary: KidColors.purple,
-      secondary: KidColors.orange,
+      seedColor: p.primary,
+      primary: p.primary,
+      secondary: p.secondary,
       surface: Colors.white,
     ),
-    scaffoldBackgroundColor: KidColors.bg,
+    scaffoldBackgroundColor: p.bg,
     useMaterial3: true,
   );
 
@@ -36,29 +39,29 @@ ThemeData buildKidKatTheme() {
     displayLarge: GoogleFonts.baloo2(
       textStyle: base.textTheme.displayLarge,
       fontWeight: FontWeight.w800,
-      color: KidColors.ink,
+      color: p.ink,
     ),
     headlineMedium: GoogleFonts.baloo2(
       fontWeight: FontWeight.w800,
-      color: KidColors.ink,
+      color: p.ink,
     ),
     titleLarge: GoogleFonts.baloo2(
       fontWeight: FontWeight.w700,
-      color: KidColors.ink,
+      color: p.ink,
     ),
   );
 
   return base.copyWith(
     textTheme: textTheme,
-    appBarTheme: const AppBarTheme(
+    appBarTheme: AppBarTheme(
       backgroundColor: Colors.transparent,
       elevation: 0,
-      foregroundColor: KidColors.ink,
+      foregroundColor: p.ink,
       centerTitle: true,
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: KidColors.purple,
+        backgroundColor: p.primary,
         foregroundColor: Colors.white,
         textStyle: GoogleFonts.baloo2(fontSize: 20, fontWeight: FontWeight.w700),
         padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),

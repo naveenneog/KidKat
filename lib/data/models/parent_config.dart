@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import '../../core/palette.dart';
 import 'allowlisted_channel.dart';
 
 /// How short the "shorts" must be.
@@ -41,6 +42,7 @@ class ParentConfig {
     this.sessionVideoCount = 8,
     this.shortLength = ShortLength.shortClips,
     this.ageBand = AgeBand.early,
+    this.themeId = ThemeId.defaultPurple,
     this.selectedTopicIds = const ['science', 'animals', 'space', 'art'],
     this.allowlist = const [],
     this.restrictToAllowlist = false,
@@ -57,6 +59,7 @@ class ParentConfig {
   final int sessionVideoCount;
   final ShortLength shortLength;
   final AgeBand ageBand;
+  final ThemeId themeId;
   final List<String> selectedTopicIds;
   final List<AllowlistedChannel> allowlist;
 
@@ -74,6 +77,7 @@ class ParentConfig {
     int? sessionVideoCount,
     ShortLength? shortLength,
     AgeBand? ageBand,
+    ThemeId? themeId,
     List<String>? selectedTopicIds,
     List<AllowlistedChannel>? allowlist,
     bool? restrictToAllowlist,
@@ -86,6 +90,7 @@ class ParentConfig {
       sessionVideoCount: sessionVideoCount ?? this.sessionVideoCount,
       shortLength: shortLength ?? this.shortLength,
       ageBand: ageBand ?? this.ageBand,
+      themeId: themeId ?? this.themeId,
       selectedTopicIds: selectedTopicIds ?? this.selectedTopicIds,
       allowlist: allowlist ?? this.allowlist,
       restrictToAllowlist: restrictToAllowlist ?? this.restrictToAllowlist,
@@ -100,6 +105,7 @@ class ParentConfig {
         'sessionVideoCount': sessionVideoCount,
         'shortLength': shortLength.name,
         'ageBand': ageBand.name,
+        'themeId': themeId.name,
         'selectedTopicIds': selectedTopicIds,
         'allowlist': allowlist.map((c) => c.toJson()).toList(),
         'restrictToAllowlist': restrictToAllowlist,
@@ -119,6 +125,10 @@ class ParentConfig {
       ageBand: AgeBand.values.firstWhere(
         (e) => e.name == (json['ageBand'] as String? ?? 'early'),
         orElse: () => AgeBand.early,
+      ),
+      themeId: ThemeId.values.firstWhere(
+        (e) => e.name == (json['themeId'] as String? ?? 'defaultPurple'),
+        orElse: () => ThemeId.defaultPurple,
       ),
       selectedTopicIds: (json['selectedTopicIds'] as List<dynamic>?)
               ?.map((e) => e as String)
