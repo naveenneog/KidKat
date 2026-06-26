@@ -44,6 +44,6 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# Node tooling for brand asset generation
-tool/icongen/node_modules/
-tool/icongen/package-lock.json
+# Node tooling for brand asset / screenshot generation
+tool/**/node_modules/
+tool/**/package-lock.json

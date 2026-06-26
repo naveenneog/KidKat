@@ -6,11 +6,27 @@
 
 **Educational shorts for curious kids — without the doomscroll.**
 
+[![Live Demo](https://img.shields.io/badge/Live_Demo-naveenneog.github.io%2FKidKat-7C4DFF?style=for-the-badge)](https://naveenneog.github.io/KidKat/)
+[![Download APK](https://img.shields.io/badge/Download-Android_APK-2EC4A6?style=for-the-badge&logo=android&logoColor=white)](https://github.com/naveenneog/KidKat/releases/latest)
+[![Flutter](https://img.shields.io/badge/Flutter-Android_+_iOS-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
+
 </div>
 
 KidKat is a cross-platform (Android + iOS) Flutter app that gives children a safe,
 **finite** stream of short *educational* videos chosen by their parents. It is a
 curated front-end built entirely on official, permitted YouTube building blocks.
+
+## 📱 Screenshots
+
+<p align="center">
+  <img src="docs/img/screen-1.png" width="19%" alt="Welcome &amp; setup"/>
+  <img src="docs/img/screen-2.png" width="19%" alt="Kid home"/>
+  <img src="docs/img/screen-3.png" width="19%" alt="Safe session player"/>
+  <img src="docs/img/screen-4.png" width="19%" alt="Parent dashboard"/>
+  <img src="docs/img/screen-5.png" width="19%" alt="Break time"/>
+</p>
+
+> ▶️ **Explore the interactive site:** https://naveenneog.github.io/KidKat/
 
 ---
 
