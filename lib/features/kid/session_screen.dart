@@ -37,6 +37,7 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
   bool _navigated = false;
   int _pendingSeconds = 0;
   String? _error;
+  bool _showHint = true;
 
   @override
   void initState() {
@@ -45,6 +46,9 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) => _tick());
     WidgetsBinding.instance.addPostFrameCallback((_) => _buildQueue());
+    Future.delayed(const Duration(milliseconds: 4000), () {
+      if (mounted) setState(() => _showHint = false);
+    });
   }
 
   Future<void> _buildQueue() async {
@@ -162,6 +166,23 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
     _controller?.loadVideoById(videoId: _queue[_index].id);
   }
 
+  void _prev() {
+    if (_navigated || _index == 0) return;
+    _flush();
+    _ended = false;
+    setState(() => _index--);
+    _controller?.loadVideoById(videoId: _queue[_index].id);
+  }
+
+  void _onVerticalDrag(DragEndDetails d) {
+    final v = d.primaryVelocity ?? 0;
+    if (v < -250) {
+      _next(); // swipe up → next
+    } else if (v > 250) {
+      _prev(); // swipe down → previous
+    }
+  }
+
   void _goOnce(String location) {
     if (_navigated) return;
     _navigated = true;
@@ -190,53 +211,93 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
     final video = _queue[_index];
     final isLast = _index >= _queue.length - 1;
 
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          // Full-bleed player.
-          YoutubePlayer(
-            controller: _controller!,
-            aspectRatio: size.width / size.height,
-            enableFullScreenOnVerticalDrag: false,
-            autoFullScreen: false,
-          ),
-
-          // Tap anywhere on the video to pause / play.
-          Positioned.fill(
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: _togglePlay,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) _goOnce('/home');
+      },
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: Stack(
+          fit: StackFit.expand,
+          children: [
+            // Full-bleed player.
+            YoutubePlayer(
+              controller: _controller!,
+              aspectRatio: size.width / size.height,
+              enableFullScreenOnVerticalDrag: false,
+              autoFullScreen: false,
             ),
-          ),
 
-          // Paused indicator.
-          IgnorePointer(
-            child: AnimatedOpacity(
-              opacity: _isPlaying ? 0 : 1,
-              duration: const Duration(milliseconds: 180),
-              child: Center(
-                child: Container(
-                  width: 84,
-                  height: 84,
-                  decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.45),
-                    shape: BoxShape.circle,
+            // Tap to pause/play; swipe up = next, swipe down = previous.
+            Positioned.fill(
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: _togglePlay,
+                onVerticalDragEnd: _onVerticalDrag,
+              ),
+            ),
+
+            // Paused indicator.
+            IgnorePointer(
+              child: AnimatedOpacity(
+                opacity: _isPlaying ? 0 : 1,
+                duration: const Duration(milliseconds: 180),
+                child: Center(
+                  child: Container(
+                    width: 84,
+                    height: 84,
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.45),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.play_arrow_rounded,
+                        color: Colors.white, size: 52),
                   ),
-                  child: const Icon(Icons.play_arrow_rounded,
-                      color: Colors.white, size: 52),
                 ),
               ),
             ),
+
+            // Swipe hint (auto-hides).
+            _swipeHint(),
+
+            // Top scrim + bar.
+            _topBar(),
+
+            // Bottom scrim + info + actions.
+            _bottomBar(video, isLast),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _swipeHint() {
+    return IgnorePointer(
+      child: AnimatedOpacity(
+        opacity: _showHint ? 1 : 0,
+        duration: const Duration(milliseconds: 400),
+        child: Align(
+          alignment: const Alignment(0, 0.45),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            decoration: BoxDecoration(
+              color: Colors.black.withValues(alpha: 0.5),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.swipe_vertical_rounded,
+                    color: Colors.white, size: 20),
+                SizedBox(width: 8),
+                Text('Swipe up for next · down to go back',
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w600)),
+              ],
+            ),
           ),
-
-          // Top scrim + bar.
-          _topBar(),
-
-          // Bottom scrim + info + actions.
-          _bottomBar(video, isLast),
-        ],
+        ),
       ),
     );
   }
@@ -348,14 +409,18 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
                   child: OutlinedButton.icon(
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.white,
-                      side: const BorderSide(color: Colors.white38),
+                      disabledForegroundColor: Colors.white24,
+                      side: BorderSide(
+                          color: _index == 0
+                              ? Colors.white12
+                              : Colors.white38),
                       padding: const EdgeInsets.symmetric(vertical: 15),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18)),
                     ),
-                    onPressed: () => _goOnce('/home'),
-                    icon: const Icon(Icons.check_rounded),
-                    label: const Text("I'm done"),
+                    onPressed: _index == 0 ? null : _prev,
+                    icon: const Icon(Icons.skip_previous_rounded),
+                    label: const Text('Back'),
                   ),
                 ),
                 const SizedBox(width: 12),
