@@ -226,7 +226,7 @@
     <div class="grid">
       <div class="feat"><div class="fic" style="background:rgba(124,77,255,.12)">🧩</div><h3>Finite sessions</h3><p>A set number of videos, then a friendly break screen. No infinite feed.</p></div>
       <div class="feat"><div class="fic" style="background:rgba(46,196,166,.14)">⏱️</div><h3>Daily time limit</h3><p>When time’s up, the app locks until tomorrow. Parents can extend.</p></div>
-      <div class="feat"><div class="fic" style="background:rgba(255,154,46,.16)">👆</div><h3>Deliberate “Next”</h3><p>Advancing is a tap, never a swipe. Related videos stay on-channel.</p></div>
+      <div class="feat"><div class="fic" style="background:rgba(255,154,46,.16)">📺</div><h3>Full-screen shorts</h3><p>Immersive full-screen playback. Advancing is a deliberate tap, never a swipe; related videos stay on-channel.</p></div>
       <div class="feat"><div class="fic" style="background:rgba(255,111,165,.14)">🔒</div><h3>Parent PIN gate</h3><p>All settings are protected behind a 4-digit parent PIN.</p></div>
       <div class="feat"><div class="fic" style="background:rgba(92,124,250,.14)">✅</div><h3>Approved channels</h3><p>One-tap trusted channels (SciShow Kids, TED-Ed, Nat Geo Kids…) or add your own.</p></div>
       <div class="feat"><div class="fic" style="background:rgba(255,210,63,.22)">🎓</div><h3>12 learning topics</h3><p>Science, Space, Animals, Math, Reading, Art, Coding, and more.</p></div>
@@ -288,24 +288,30 @@
 
         <div>
           <div class="phone"><div class="notch"></div>
-            <div class="scr dark">
-              <div class="sbar"><span>9:41</span><span class="dots"><i></i><i></i><i></i></span></div>
-              <div class="body">
-                <div style="display:flex;align-items:center;font-size:13px;font-weight:700;padding:2px 0 4px">
+            <div class="scr" style="background:linear-gradient(160deg,#2b1b53,#0b0720);color:#fff;position:relative">
+              <!-- full-bleed video -->
+              <div style="position:absolute;inset:0;display:grid;place-items:center">
+                <div class="playg" style="opacity:.9"></div>
+              </div>
+              <!-- top overlay -->
+              <div style="position:absolute;top:0;left:0;right:0;padding:10px 14px 26px;background:linear-gradient(to bottom,rgba(0,0,0,.6),transparent)">
+                <div class="sbar" style="padding:0 0 8px"><span>9:41</span><span class="dots"><i></i><i></i><i></i></span></div>
+                <div style="display:flex;align-items:center;font-weight:700">
                   <span style="font-size:18px">✕</span>
-                  <span style="margin:0 auto;background:rgba(255,255,255,.15);padding:4px 12px;border-radius:12px;font-size:12px">Video 2 of 8</span>
+                  <span style="margin:0 auto;background:rgba(255,255,255,.18);padding:5px 12px;border-radius:12px;font-size:12px">🎓 Video 2 of 8</span>
                   <span style="width:18px"></span>
                 </div>
-                <div class="videoarea"><div class="playg"></div></div>
+              </div>
+              <!-- bottom overlay -->
+              <div style="position:absolute;left:0;right:0;bottom:0;padding:30px 16px 16px;background:linear-gradient(to top,rgba(0,0,0,.82),transparent)">
                 <div class="vtitle">How do volcanoes erupt? 🌋</div>
-                <div class="vchan">SciShow Kids</div>
-                <div class="prog"><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-                <div style="flex:1"></div>
+                <div class="vchan" style="display:flex;align-items:center;gap:5px;color:#cfd8ff">✅ SciShow Kids</div>
+                <div class="prog" style="margin:12px 0"><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
                 <div style="display:flex;gap:10px"><div class="ghbtn">✓ I'm done</div><div class="obtn">Next ⏭</div></div>
               </div>
             </div>
           </div>
-          <div class="caption">Safe session player</div>
+          <div class="caption">Full-screen shorts player</div>
         </div>
 
         <div>

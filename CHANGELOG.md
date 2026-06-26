@@ -3,6 +3,41 @@
 All notable changes, decisions, and approaches (including rejected ones) are
 recorded here so the project's history is traceable.
 
+## [0.2.0] — Full-screen shorts + guided API setup + bigger logo
+
+### Full-screen Shorts player
+- Rewrote the session player to be **immersive full-screen**: the video fills the
+  screen (system bars hidden via `SystemUiMode.immersiveSticky`), with overlay
+  top/bottom controls (close, "Video x of N", title, channel, progress, Next/Done).
+- Tap anywhere to pause/play; `autoFullScreen`/`enableFullScreenOnVerticalDrag`
+  disabled so vertical shorts stay upright and edge-to-edge.
+
+### Guided, self-verifying API key setup
+- New `ApiKeySetup` widget: deep-links straight to the right Google Cloud Console
+  pages (`flows/enableapi?apiid=youtube.googleapis.com` + Credentials), a
+  **Paste-from-clipboard** button, and **live key verification** that saves the key
+  automatically on success. Used in onboarding and the parent dashboard.
+- Added `YouTubeApi.validateKey()` (cheap `i18nLanguages` call) returning
+  `ApiKeyStatus { valid, invalid, serviceDisabled, unreachable }`. Improved error
+  reason parsing to read the `details[].reason` ErrorInfo (API_KEY_INVALID,
+  SERVICE_DISABLED). Added `url_launcher`.
+- Note: an app cannot silently mint a Google API key (requires the user's own
+  Cloud project + consent); this is the compliant "as close to one-tap as possible".
+
+### Branding
+- Enlarged the cat in the app icon (~1.28×) and the Android adaptive foreground
+  (0.64→0.82) so the logo fills the icon/launcher instead of looking small.
+  Regenerated launcher icons + splash.
+
+### Tests
+- 41 passing (added `validateKey` cases: valid / empty / invalid / serviceDisabled /
+  quota-as-valid). Updated onboarding widget test for the new setup UI.
+- `flutter analyze`: 0 issues.
+
+### Docs
+- Landing page: updated player mock to the full-screen shorts UI, refreshed icon,
+  added a "Full-screen shorts" feature.
+
 ## [0.1.0] — Initial build
 
 ### Compliance decision (the most important one)

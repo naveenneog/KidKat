@@ -99,5 +99,80 @@ void main() {
       final api = YouTubeApi(apiKey: 'KEY', client: client);
       expect(await api.searchShortVideos(query: 'science'), isEmpty);
     });
+
+    group('validateKey', () {
+      test('valid key returns valid', () async {
+        final client = MockClient((req) async {
+          expect(req.url.path, '/youtube/v3/i18nLanguages');
+          return _json({'items': []});
+        });
+        final api = YouTubeApi(apiKey: 'KEY', client: client);
+        expect(await api.validateKey(), ApiKeyStatus.valid);
+      });
+
+      test('empty key returns invalid without a request', () async {
+        var called = false;
+        final client = MockClient((req) async {
+          called = true;
+          return _json({});
+        });
+        final api = YouTubeApi(apiKey: '', client: client);
+        expect(await api.validateKey(), ApiKeyStatus.invalid);
+        expect(called, false);
+      });
+
+      test('invalid key (API_KEY_INVALID in details) returns invalid',
+          () async {
+        final client = MockClient((req) async {
+          return _json({
+            'error': {
+              'message': 'API key not valid.',
+              'status': 'INVALID_ARGUMENT',
+              'errors': [
+                {'reason': 'badRequest'}
+              ],
+              'details': [
+                {'reason': 'API_KEY_INVALID'}
+              ]
+            }
+          }, 400);
+        });
+        final api = YouTubeApi(apiKey: 'bad', client: client);
+        expect(await api.validateKey(), ApiKeyStatus.invalid);
+      });
+
+      test('service disabled returns serviceDisabled', () async {
+        final client = MockClient((req) async {
+          return _json({
+            'error': {
+              'message': 'YouTube Data API has not been used...',
+              'errors': [
+                {'reason': 'accessNotConfigured'}
+              ],
+              'details': [
+                {'reason': 'SERVICE_DISABLED'}
+              ]
+            }
+          }, 403);
+        });
+        final api = YouTubeApi(apiKey: 'KEY', client: client);
+        expect(await api.validateKey(), ApiKeyStatus.serviceDisabled);
+      });
+
+      test('quota exceeded still counts as valid (key works)', () async {
+        final client = MockClient((req) async {
+          return _json({
+            'error': {
+              'message': 'quota',
+              'errors': [
+                {'reason': 'quotaExceeded'}
+              ]
+            }
+          }, 403);
+        });
+        final api = YouTubeApi(apiKey: 'KEY', client: client);
+        expect(await api.validateKey(), ApiKeyStatus.valid);
+      });
+    });
   });
 }

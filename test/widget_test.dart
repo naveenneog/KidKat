@@ -34,6 +34,6 @@ void main() {
     await tester.tap(find.text("Let's set up"));
     await tester.pump();
     expect(find.text('Parent setup'), findsOneWidget);
-    expect(find.text('YouTube Data API key'), findsOneWidget);
+    expect(find.text('Connect YouTube (one-time)'), findsOneWidget);
   });
 }
