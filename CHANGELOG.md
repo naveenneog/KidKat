@@ -3,6 +3,36 @@
 All notable changes, decisions, and approaches (including rejected ones) are
 recorded here so the project's history is traceable.
 
+## [0.5.0] — Working swipe, saved videos, omit-watched (emulator-tested)
+
+### Player gestures (swipe up/down) — fixed & verified on an Android emulator
+- **Root cause:** the YouTube IFrame WebView swallows drag gestures on Android —
+  Flutter `GestureDetector`/`Listener`/`gestureRecognizers`/`controlsBuilder` never
+  receive drags, and `runJavaScriptReturningResult` hangs.
+- **Fix:** inject a JS overlay catcher inside the WebView (and set the iframe's
+  `pointer-events:none`) that detects swipe/tap and posts back via a
+  `addJavaScriptChannel('KidKatGesture')` channel. **Swipe up = next, down =
+  previous** now works; tap = play/pause. Verified end-to-end on an `android-34`
+  emulator via `adb input swipe` + logcat + screenshots.
+- Controls moved to slim top/bottom bars (always visible & tappable): close,
+  "🎓 x / y", **bookmark**, title, progress, **Back / Next**.
+
+### Bookmark + Saved videos
+- Bookmark button in the player saves a video; new **Saved** screen (bookmark icon
+  on the kid home) lists them and can replay all. Persisted on-device.
+
+### Omit already-watched
+- Played video ids are remembered and excluded from future sessions so kids keep
+  getting fresh content.
+
+### Testing aids
+- Debug-only **demo playlist** + `--dart-define=KIDKAT_DEMO=true` boot-straight-to-
+  player flag, used to validate playback + gestures without an API key.
+
+### Quality
+- 45 passing tests (added watched-exclude + saved/watched persistence),
+  `flutter analyze` clean.
+
 ## [0.4.0] — New 3D logo + theme switcher
 
 ### Branding

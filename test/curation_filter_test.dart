@@ -85,6 +85,16 @@ void main() {
       );
       expect(out.map((e) => e.id), ['a', 'b']);
     });
+
+    test('omits excluded (already-watched) ids', () {
+      final out = CurationService.filterEducational(
+        [v('a'), v('b'), v('c')],
+        maxDurationSeconds: 240,
+        allowlistChannelIds: {},
+        exclude: {'a', 'c'},
+      );
+      expect(out.map((e) => e.id), ['b']);
+    });
   });
 
   group('CurationService.ageQuery', () {

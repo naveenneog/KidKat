@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kidkat/data/local_store.dart';
+import 'package:kidkat/data/models/kid_video.dart';
 import 'package:kidkat/data/models/parent_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -49,5 +50,32 @@ void main() {
         await LocalStore.create(clock: () => DateTime(2024, 1, 3, 10));
     expect(day3.watchedSecondsToday(), 0);
     expect(day2.watchedSecondsToday(), 120);
+  });
+
+  test('persists watched video ids (merged, deduped)', () async {
+    final store = await LocalStore.create();
+    await store.addWatchedIds(['a', 'b']);
+    await store.addWatchedIds(['b', 'c']);
+    expect((await LocalStore.create()).watchedIds(), {'a', 'b', 'c'});
+    await store.clearWatchedIds();
+    expect((await LocalStore.create()).watchedIds(), <String>{});
+  });
+
+  test('saves and loads bookmarked videos', () async {
+    final store = await LocalStore.create();
+    await store.saveSavedVideos(const [
+      KidVideo(
+        id: 'x',
+        title: 'Title',
+        channelId: 'c',
+        channelTitle: 'Chan',
+        thumbnailUrl: 'u',
+        durationSeconds: 30,
+      ),
+    ]);
+    final loaded = (await LocalStore.create()).savedVideos();
+    expect(loaded.length, 1);
+    expect(loaded.first.id, 'x');
+    expect(loaded.first.title, 'Title');
   });
 }
