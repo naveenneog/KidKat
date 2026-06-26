@@ -31,7 +31,7 @@
     <path d="M880 520 l8 21 21 8 -21 8 -8 21 -8 -21 -21 -8 21 -8z" opacity="0.85"/>
   </g>
 
-  <g filter="url(#soft)" transform="translate(512 566) scale(1.28) translate(-512 -549)">
+  <g filter="url(#soft)" transform="translate(512 558) scale(1.42) translate(-512 -549)">
     <!-- ears -->
     <path d="M362 430 L488 372 L388 250 Z" fill="url(#fur)"/>
     <path d="M662 430 L536 372 L636 250 Z" fill="url(#fur)"/>
