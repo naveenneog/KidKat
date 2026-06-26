@@ -8,7 +8,7 @@
       <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#1A1140" flood-opacity="0.30"/>
     </filter>
   </defs>
-  <g filter="url(#soft)" transform="translate(512 520) scale(0.64) translate(-512 -549)">
+  <g filter="url(#soft)" transform="translate(512 540) scale(0.82) translate(-512 -549)">
     <path d="M362 430 L488 372 L388 250 Z" fill="url(#fur)"/>
     <path d="M662 430 L536 372 L636 250 Z" fill="url(#fur)"/>
     <path d="M392 405 L470 369 L408 290 Z" fill="#FFD6E0"/>
