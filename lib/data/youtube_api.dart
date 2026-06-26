@@ -5,18 +5,35 @@ import 'package:http/http.dart' as http;
 import '../core/duration_utils.dart';
 import 'models/kid_video.dart';
 
+/// Result of validating a YouTube Data API key.
+enum ApiKeyStatus {
+  /// The key works (or works but is temporarily over quota).
+  valid,
+
+  /// The key is missing or rejected as invalid.
+  invalid,
+
+  /// The key is valid but the YouTube Data API v3 is not enabled for its project.
+  serviceDisabled,
+
+  /// Could not reach the API to verify (network/other).
+  unreachable,
+}
+
 /// Thrown when the YouTube Data API returns an error or cannot be reached.
 class YouTubeApiException implements Exception {
   YouTubeApiException(this.message, {this.statusCode, this.reason});
   final String message;
   final int? statusCode;
 
-  /// Machine-readable reason, e.g. `quotaExceeded`, `keyInvalid`.
+  /// Machine-readable reason, e.g. `quotaExceeded`, `API_KEY_INVALID`.
   final String? reason;
 
   bool get isQuotaExceeded => reason == 'quotaExceeded';
   bool get isKeyInvalid =>
       reason == 'keyInvalid' || reason == 'API_KEY_INVALID';
+  bool get isServiceDisabled =>
+      reason == 'SERVICE_DISABLED' || reason == 'accessNotConfigured';
 
   @override
   String toString() => 'YouTubeApiException($statusCode, $reason): $message';
@@ -52,9 +69,22 @@ class YouTubeApi {
         : jsonDecode(res.body) as Map<String, dynamic>;
     if (res.statusCode != 200) {
       final error = body['error'] as Map<String, dynamic>?;
-      final reason = (error?['errors'] as List<dynamic>?)?.isNotEmpty == true
+      String? reason;
+      // Prefer the ErrorInfo reason in details (e.g. API_KEY_INVALID,
+      // SERVICE_DISABLED), which is more specific than the legacy errors[].
+      final details = error?['details'] as List<dynamic>?;
+      if (details != null) {
+        for (final d in details) {
+          if (d is Map && d['reason'] is String) {
+            reason = d['reason'] as String;
+            break;
+          }
+        }
+      }
+      reason ??= (error?['errors'] as List<dynamic>?)?.isNotEmpty == true
           ? ((error!['errors'] as List).first as Map)['reason'] as String?
-          : (error?['status'] as String?);
+          : null;
+      reason ??= error?['status'] as String?;
       throw YouTubeApiException(
         (error?['message'] as String?) ?? 'Request failed',
         statusCode: res.statusCode,
@@ -62,6 +92,21 @@ class YouTubeApi {
       );
     }
     return body;
+  }
+
+  /// Verifies that [apiKey] works by making a tiny (1-unit) request. Used by the
+  /// guided setup so a pasted key is confirmed instantly.
+  Future<ApiKeyStatus> validateKey() async {
+    if (apiKey.trim().isEmpty) return ApiKeyStatus.invalid;
+    try {
+      await _getJson('/youtube/v3/i18nLanguages', {'part': 'snippet'});
+      return ApiKeyStatus.valid;
+    } on YouTubeApiException catch (e) {
+      if (e.isKeyInvalid) return ApiKeyStatus.invalid;
+      if (e.isServiceDisabled) return ApiKeyStatus.serviceDisabled;
+      if (e.isQuotaExceeded) return ApiKeyStatus.valid; // works, just throttled
+      return ApiKeyStatus.unreachable;
+    }
   }
 
   /// Resolves a channel id from a free-text channel name. Returns null if no

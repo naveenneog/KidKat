@@ -7,9 +7,10 @@ import '../../core/constants.dart';
 import '../../core/theme.dart';
 import '../../data/models/topic.dart';
 import '../../data/providers.dart';
+import '../../widgets/api_key_setup.dart';
 import '../../widgets/brand.dart';
 
-/// First-run parent setup: welcome → API key + PIN → interests.
+/// First-run parent setup: welcome → guided API key + PIN → interests.
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
 
@@ -19,24 +20,19 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   int _step = 0;
-  final _apiKeyCtrl = TextEditingController();
   final _pinCtrl = TextEditingController();
   final Set<String> _topics = {'science', 'animals', 'space', 'art'};
 
   @override
   void dispose() {
-    _apiKeyCtrl.dispose();
     _pinCtrl.dispose();
     super.dispose();
   }
 
-  bool get _setupValid =>
-      _apiKeyCtrl.text.trim().isNotEmpty && _pinCtrl.text.length == 4;
-
   Future<void> _finish() async {
     await ref.read(parentConfigProvider.notifier).completeOnboarding(
           pin: _pinCtrl.text,
-          apiKey: _apiKeyCtrl.text,
+          apiKey: ref.read(parentConfigProvider).apiKey,
           topicIds: _topics.toList(),
         );
     ref.read(onboardedProvider.notifier).state = true;
@@ -45,6 +41,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final apiConnected =
+        ref.watch(parentConfigProvider).apiKey.trim().isNotEmpty;
     return BrandGradient(
       child: Scaffold(
         backgroundColor: Colors.transparent,
@@ -53,7 +51,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             padding: const EdgeInsets.all(24),
             child: switch (_step) {
               0 => _welcome(),
-              1 => _setup(),
+              1 => _setup(apiConnected),
               _ => _interests(),
             },
           ),
@@ -102,7 +100,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     );
   }
 
-  Widget _setup() {
+  Widget _setup(bool apiConnected) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -112,30 +110,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           child: ListView(
             children: [
               _glassCard(
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('YouTube Data API key',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16)),
-                    const SizedBox(height: 6),
-                    const Text(
-                      'KidKat uses your own free YouTube Data API v3 key to find '
-                      'educational videos. Create one at console.cloud.google.com '
-                      '→ APIs & Services → Credentials.',
-                      style: TextStyle(color: Colors.white70, fontSize: 13),
-                    ),
-                    const SizedBox(height: 12),
-                    TextField(
-                      controller: _apiKeyCtrl,
-                      onChanged: (_) => setState(() {}),
-                      style: const TextStyle(color: Colors.white),
-                      decoration: _inputDecoration('Paste API key'),
-                    ),
-                  ],
-                ),
+                ApiKeySetup(dark: true, onValidated: () => setState(() {})),
               ),
               const SizedBox(height: 16),
               _glassCard(
@@ -184,7 +159,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               label: 'Next',
               icon: Icons.arrow_forward_rounded,
               color: Colors.white,
-              onPressed: _setupValid ? () => setState(() => _step = 2) : null,
+              onPressed: (apiConnected && _pinCtrl.text.length == 4)
+                  ? () => setState(() => _step = 2)
+                  : null,
             ),
           ],
         ),

@@ -8,6 +8,7 @@ import '../../data/models/allowlisted_channel.dart';
 import '../../data/models/parent_config.dart';
 import '../../data/models/topic.dart';
 import '../../data/providers.dart';
+import '../../widgets/api_key_setup.dart';
 
 /// Parent control center: API key, interests, channel allowlist, time limits,
 /// short-length, safe search and a compliance note.
@@ -19,21 +20,6 @@ class ParentDashboard extends ConsumerStatefulWidget {
 }
 
 class _ParentDashboardState extends ConsumerState<ParentDashboard> {
-  late final TextEditingController _apiKeyCtrl;
-
-  @override
-  void initState() {
-    super.initState();
-    _apiKeyCtrl =
-        TextEditingController(text: ref.read(parentConfigProvider).apiKey);
-  }
-
-  @override
-  void dispose() {
-    _apiKeyCtrl.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     final config = ref.watch(parentConfigProvider);
@@ -54,36 +40,7 @@ class _ParentDashboardState extends ConsumerState<ParentDashboard> {
           _Section(
             title: 'YouTube Data API key',
             icon: Icons.key_rounded,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextField(
-                  controller: _apiKeyCtrl,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    hintText: 'API key',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(14)),
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.save_rounded),
-                      onPressed: () {
-                        notifier.setApiKey(_apiKeyCtrl.text);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('API key saved')),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  'Used only to discover videos. Stored on this device.',
-                  style: TextStyle(
-                      fontSize: 12,
-                      color: KidColors.ink.withValues(alpha: .6)),
-                ),
-              ],
-            ),
+            child: const ApiKeySetup(),
           ),
           _Section(
             title: 'Interests',
