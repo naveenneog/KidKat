@@ -9,6 +9,7 @@
 [![Live Demo](https://img.shields.io/badge/Live_Demo-naveenneog.github.io%2FKidKat-7C4DFF?style=for-the-badge)](https://naveenneog.github.io/KidKat/)
 [![Download APK](https://img.shields.io/badge/Download-Android_APK-2EC4A6?style=for-the-badge&logo=android&logoColor=white)](https://github.com/naveenneog/KidKat/releases/latest)
 [![Flutter](https://img.shields.io/badge/Flutter-Android_+_iOS-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
+[![License: PolyForm NC 1.0.0](https://img.shields.io/badge/License-PolyForm_Noncommercial-FF6FA5?style=for-the-badge)](LICENSE)
 
 </div>
 
@@ -141,4 +142,11 @@ lib/
 
 ## 📄 License
 
-Add your preferred license before publishing.
+**KidKat is free for non‑commercial use** under the
+[PolyForm Noncommercial License 1.0.0](LICENSE) — you may use, modify, and
+share it for any noncommercial purpose (personal, educational, research,
+non‑profit, government). **Commercial use is not permitted** without a separate
+license. See [`LICENSE`](LICENSE) for the full terms.
+
+> Note: this covers KidKat's own code. YouTube content played in the app remains
+> subject to YouTube's Terms and the respective creators' rights.
