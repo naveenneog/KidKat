@@ -2,6 +2,8 @@
 /// channels parents can add with one tap.
 library;
 
+import '../data/models/parent_config.dart';
+
 class KidKat {
   static const String appName = 'KidKat';
   static const String tagline = 'Educational shorts for curious kids';
@@ -35,3 +37,33 @@ const List<SuggestedChannel> kSuggestedChannels = [
   SuggestedChannel('Art for Kids Hub', 'Art for Kids Hub'),
   SuggestedChannel('Homeschool Pop', 'Homeschool Pop'),
 ];
+
+/// Trusted educational channels grouped by age band, so KidKat can deliver
+/// age-appropriate content out of the box.
+const Map<AgeBand, List<SuggestedChannel>> kChannelsByAge = {
+  AgeBand.preschool: [
+    SuggestedChannel('Khan Academy Kids', 'Khan Academy Kids'),
+    SuggestedChannel('StoryBots', 'StoryBots'),
+    SuggestedChannel('Numberblocks', 'Numberblocks Learn to Count'),
+    SuggestedChannel('Super Simple', 'Super Simple Songs'),
+    SuggestedChannel('Sesame Street', 'Sesame Street'),
+  ],
+  AgeBand.early: [
+    SuggestedChannel('SciShow Kids', 'SciShow Kids'),
+    SuggestedChannel('National Geographic Kids', 'National Geographic Kids'),
+    SuggestedChannel('Free School', 'Free School FreeSchool'),
+    SuggestedChannel('Homeschool Pop', 'Homeschool Pop'),
+    SuggestedChannel('Art for Kids Hub', 'Art for Kids Hub'),
+  ],
+  AgeBand.tween: [
+    SuggestedChannel('TED-Ed', 'TED-Ed'),
+    SuggestedChannel('Crash Course Kids', 'Crash Course Kids'),
+    SuggestedChannel('National Geographic', 'National Geographic'),
+    SuggestedChannel('Khan Academy', 'Khan Academy'),
+    SuggestedChannel('SciShow', 'SciShow'),
+  ],
+};
+
+/// Returns the trusted channels recommended for an age band.
+List<SuggestedChannel> suggestedChannelsFor(AgeBand band) =>
+    kChannelsByAge[band] ?? kSuggestedChannels;

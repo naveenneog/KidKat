@@ -8,6 +8,7 @@ import 'local_store.dart';
 import 'models/allowlisted_channel.dart';
 import 'models/parent_config.dart';
 import 'youtube_api.dart';
+import '../core/constants.dart';
 
 /// Provides the [LocalStore]. Overridden in `main()` after async init.
 final localStoreProvider = Provider<LocalStore>(
@@ -58,6 +59,21 @@ class ParentConfigNotifier extends StateNotifier<ParentConfig> {
   Future<void> setTopics(List<String> topicIds) =>
       _update(state.copyWith(selectedTopicIds: topicIds));
 
+  Future<void> setAgeBand(AgeBand band) =>
+      _update(state.copyWith(ageBand: band));
+
+  /// Adds the recommended channels for the given age band that aren't already
+  /// on the allowlist.
+  Future<void> addRecommendedChannels(AgeBand band) {
+    final existing = state.allowlist.map((c) => c.title).toSet();
+    final additions = suggestedChannelsFor(band)
+        .where((s) => !existing.contains(s.title))
+        .map((s) => AllowlistedChannel(title: s.title, query: s.query));
+    if (additions.isEmpty) return Future.value();
+    return _update(
+        state.copyWith(allowlist: [...state.allowlist, ...additions]));
+  }
+
   Future<void> toggleTopic(String topicId) {
     final topics = [...state.selectedTopicIds];
     if (topics.contains(topicId)) {
@@ -91,11 +107,20 @@ class ParentConfigNotifier extends StateNotifier<ParentConfig> {
     required String pin,
     required String apiKey,
     required List<String> topicIds,
+    required AgeBand ageBand,
   }) async {
+    // Deliver age-appropriate channels out of the box when none are set yet.
+    final allowlist = state.allowlist.isEmpty
+        ? suggestedChannelsFor(ageBand)
+            .map((s) => AllowlistedChannel(title: s.title, query: s.query))
+            .toList()
+        : state.allowlist;
     await _update(state.copyWith(
       pin: pin,
       apiKey: apiKey.trim(),
       selectedTopicIds: topicIds,
+      ageBand: ageBand,
+      allowlist: allowlist,
     ));
     await _store.setOnboarded(true);
   }

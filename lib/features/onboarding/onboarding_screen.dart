@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/constants.dart';
 import '../../core/theme.dart';
+import '../../data/models/parent_config.dart';
 import '../../data/models/topic.dart';
 import '../../data/providers.dart';
 import '../../widgets/api_key_setup.dart';
@@ -21,6 +22,7 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   int _step = 0;
   final _pinCtrl = TextEditingController();
+  AgeBand _ageBand = AgeBand.early;
   final Set<String> _topics = {'science', 'animals', 'space', 'art'};
 
   @override
@@ -34,6 +36,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           pin: _pinCtrl.text,
           apiKey: ref.read(parentConfigProvider).apiKey,
           topicIds: _topics.toList(),
+          ageBand: _ageBand,
         );
     ref.read(onboardedProvider.notifier).state = true;
     if (mounted) context.go('/home');
@@ -174,7 +177,23 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _header('Pick interests', 'Step 2 of 2'),
+        const SizedBox(height: 14),
+        const Text('How old is your child?',
+            style: TextStyle(
+                color: Colors.white, fontWeight: FontWeight.w700, fontSize: 16)),
         const SizedBox(height: 8),
+        Row(
+          children: [
+            for (final b in AgeBand.values)
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: _ageChip(b),
+                ),
+              ),
+          ],
+        ),
+        const SizedBox(height: 18),
         const Text('Choose what your child loves to learn about.',
             style: TextStyle(color: Colors.white70)),
         const SizedBox(height: 16),
@@ -230,6 +249,41 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 .headlineMedium
                 ?.copyWith(color: Colors.white)),
       ],
+    );
+  }
+
+  Widget _ageChip(AgeBand b) {
+    final selected = _ageBand == b;
+    return GestureDetector(
+      onTap: () => setState(() => _ageBand = b),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: selected ? Colors.white : Colors.white.withValues(alpha: 0.16),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+              color: selected ? Colors.white : Colors.white30, width: 2),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(b.range,
+                style: TextStyle(
+                    color: selected ? KidColors.ink : Colors.white,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 17)),
+            Text(b.label,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: selected
+                        ? KidColors.ink.withValues(alpha: .7)
+                        : Colors.white70,
+                    fontSize: 10.5)),
+          ],
+        ),
+      ),
     );
   }
 

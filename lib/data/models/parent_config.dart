@@ -12,6 +12,25 @@ enum ShortLength {
   final String label;
 }
 
+/// The child's age band, used to deliver age-appropriate channels and bias
+/// search queries.
+enum AgeBand {
+  preschool('3–5', 'Preschool', 'for preschoolers'),
+  early('6–8', 'Early learners', 'for kids'),
+  tween('9–12', 'Tweens', 'for students');
+
+  const AgeBand(this.range, this.label, this.queryQualifier);
+
+  /// e.g. "3–5".
+  final String range;
+
+  /// e.g. "Preschool".
+  final String label;
+
+  /// Appended to search queries to bias age-appropriateness.
+  final String queryQualifier;
+}
+
 /// All parent-controlled settings. Persisted locally as JSON. Contains no child
 /// PII — only preferences and the parent's own YouTube Data API key + PIN.
 class ParentConfig {
@@ -21,6 +40,7 @@ class ParentConfig {
     this.dailyLimitMinutes = 30,
     this.sessionVideoCount = 8,
     this.shortLength = ShortLength.shortClips,
+    this.ageBand = AgeBand.early,
     this.selectedTopicIds = const ['science', 'animals', 'space', 'art'],
     this.allowlist = const [],
     this.restrictToAllowlist = false,
@@ -36,6 +56,7 @@ class ParentConfig {
   final int dailyLimitMinutes;
   final int sessionVideoCount;
   final ShortLength shortLength;
+  final AgeBand ageBand;
   final List<String> selectedTopicIds;
   final List<AllowlistedChannel> allowlist;
 
@@ -52,6 +73,7 @@ class ParentConfig {
     int? dailyLimitMinutes,
     int? sessionVideoCount,
     ShortLength? shortLength,
+    AgeBand? ageBand,
     List<String>? selectedTopicIds,
     List<AllowlistedChannel>? allowlist,
     bool? restrictToAllowlist,
@@ -63,6 +85,7 @@ class ParentConfig {
       dailyLimitMinutes: dailyLimitMinutes ?? this.dailyLimitMinutes,
       sessionVideoCount: sessionVideoCount ?? this.sessionVideoCount,
       shortLength: shortLength ?? this.shortLength,
+      ageBand: ageBand ?? this.ageBand,
       selectedTopicIds: selectedTopicIds ?? this.selectedTopicIds,
       allowlist: allowlist ?? this.allowlist,
       restrictToAllowlist: restrictToAllowlist ?? this.restrictToAllowlist,
@@ -76,6 +99,7 @@ class ParentConfig {
         'dailyLimitMinutes': dailyLimitMinutes,
         'sessionVideoCount': sessionVideoCount,
         'shortLength': shortLength.name,
+        'ageBand': ageBand.name,
         'selectedTopicIds': selectedTopicIds,
         'allowlist': allowlist.map((c) => c.toJson()).toList(),
         'restrictToAllowlist': restrictToAllowlist,
@@ -91,6 +115,10 @@ class ParentConfig {
       shortLength: ShortLength.values.firstWhere(
         (e) => e.name == (json['shortLength'] as String? ?? 'shortClips'),
         orElse: () => ShortLength.shortClips,
+      ),
+      ageBand: AgeBand.values.firstWhere(
+        (e) => e.name == (json['ageBand'] as String? ?? 'early'),
+        orElse: () => AgeBand.early,
       ),
       selectedTopicIds: (json['selectedTopicIds'] as List<dynamic>?)
               ?.map((e) => e as String)

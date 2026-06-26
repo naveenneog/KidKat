@@ -59,6 +59,45 @@ class _ParentDashboardState extends ConsumerState<ParentDashboard> {
             ),
           ),
           _Section(
+            title: 'Child age',
+            icon: Icons.cake_rounded,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SegmentedButton<AgeBand>(
+                  segments: [
+                    for (final b in AgeBand.values)
+                      ButtonSegment(value: b, label: Text(b.range)),
+                  ],
+                  selected: {config.ageBand},
+                  onSelectionChanged: (s) => notifier.setAgeBand(s.first),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  '${config.ageBand.label} — KidKat tailors channels and '
+                  'searches to this age.',
+                  style: TextStyle(
+                      fontSize: 12, color: KidColors.ink.withValues(alpha: .6)),
+                ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: TextButton.icon(
+                    onPressed: () {
+                      notifier.addRecommendedChannels(config.ageBand);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text(
+                                'Added recommended ${config.ageBand.label} channels')),
+                      );
+                    },
+                    icon: const Icon(Icons.auto_awesome_rounded),
+                    label: const Text('Add recommended channels'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          _Section(
             title: 'Approved channels',
             icon: Icons.verified_user_rounded,
             child: Column(
@@ -88,7 +127,7 @@ class _ParentDashboardState extends ConsumerState<ParentDashboard> {
                   spacing: 8,
                   runSpacing: 8,
                   children: [
-                    for (final s in kSuggestedChannels)
+                    for (final s in suggestedChannelsFor(config.ageBand))
                       if (!config.allowlist
                           .any((c) => c.title == s.title))
                         ActionChip(

@@ -68,9 +68,10 @@ class CurationService {
     final candidates = <KidVideo>[];
 
     // 1) Discover within parent-approved channels (always trusted).
+    // Cap the number of channels searched per session to bound API quota.
     if (allowlistIds.isNotEmpty) {
-      final q = _topicsQuery(effectiveTopics);
-      for (final channelId in allowlistIds) {
+      final q = _topicsQuery(effectiveTopics, config.ageBand);
+      for (final channelId in allowlistIds.take(3)) {
         try {
           final vids = await api.searchShortVideos(
             query: q,
@@ -94,7 +95,7 @@ class CurationService {
         if (topic == null) continue;
         try {
           final vids = await api.searchShortVideos(
-            query: topic.query,
+            query: ageQuery(topic, config.ageBand),
             maxResults: perQuery,
             safeSearchStrict: config.safeSearchStrict,
           );
@@ -138,13 +139,17 @@ class CurationService {
     return out;
   }
 
-  static String _topicsQuery(List<String> topicIds) {
+  /// Builds an age-aware query for a single topic, e.g. "Science for kids".
+  static String ageQuery(Topic topic, AgeBand band) =>
+      '${topic.label} ${band.queryQualifier}';
+
+  static String _topicsQuery(List<String> topicIds, AgeBand band) {
     final labels = topicIds
         .map(topicById)
         .whereType<Topic>()
         .map((t) => t.label.toLowerCase())
         .toList();
-    if (labels.isEmpty) return 'learning for kids';
-    return '${labels.join(' ')} for kids';
+    if (labels.isEmpty) return 'learning ${band.queryQualifier}';
+    return '${labels.join(' ')} ${band.queryQualifier}';
   }
 }
