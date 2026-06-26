@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>KidKat — Educational shorts for curious kids</title>
+<meta name="description" content="KidKat is a kid-safe app that plays only short, educational videos you approve — no doomscrolling. Built ToS-compliant on the official YouTube Data API and IFrame player." />
+<link rel="icon" href="img/app_icon.png" />
+<meta property="og:title" content="KidKat — Educational shorts for curious kids" />
+<meta property="og:description" content="Kid-safe, parent-curated educational shorts. No doomscrolling. Android + iOS, Flutter." />
+<meta property="og:image" content="img/app_icon.png" />
+<meta property="og:type" content="website" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --purple:#7C4DFF; --blue:#5C7CFA; --sky:#19C8FF; --orange:#FF9A2E;
+    --sunny:#FFD23F; --ink:#2D2150; --bg:#F6F3FF; --pink:#FF6FA5; --green:#2EC4A6;
+    --card:#ffffff; --grad:linear-gradient(135deg,#7C4DFF 0%,#5C7CFA 55%,#19C8FF 100%);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Nunito',system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.55}
+  h1,h2,h3,.display{font-family:'Baloo 2',cursive}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 22px}
+  .btn{display:inline-flex;align-items:center;gap:10px;font-family:'Baloo 2';font-weight:700;
+    font-size:18px;padding:14px 26px;border-radius:20px;border:none;cursor:pointer;transition:.2s;white-space:nowrap}
+  .btn-primary{background:var(--purple);color:#fff;box-shadow:0 8px 22px rgba(124,77,255,.4)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(124,77,255,.5)}
+  .btn-ghost{background:rgba(255,255,255,.18);color:#fff;border:2px solid rgba(255,255,255,.5)}
+  .btn-ghost:hover{background:rgba(255,255,255,.28)}
+  .btn-dark{background:var(--ink);color:#fff}
+  .btn-dark:hover{transform:translateY(-2px)}
+
+  /* NAV */
+  nav{position:sticky;top:0;z-index:50;background:rgba(246,243,255,.85);backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(124,77,255,.12)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:68px}
+  .brand{display:flex;align-items:center;gap:12px;font-family:'Baloo 2';font-weight:800;font-size:22px}
+  .brand img{width:40px;height:40px;border-radius:11px}
+  .nav-links{display:flex;align-items:center;gap:26px;font-weight:700}
+  .nav-links a.small{font-size:15px;color:var(--ink);opacity:.8}
+  .nav-links a.small:hover{opacity:1;color:var(--purple)}
+  @media(max-width:720px){.nav-links a.small{display:none}}
+
+  /* HERO */
+  header{background:var(--grad);color:#fff;padding:64px 0 90px;position:relative;overflow:hidden}
+  header .spark{position:absolute;border-radius:50%;background:#fff;opacity:.5}
+  .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;position:relative;z-index:2}
+  @media(max-width:860px){.hero{grid-template-columns:1fr;text-align:center}}
+  .hero-badge{display:inline-flex;gap:8px;align-items:center;background:rgba(255,255,255,.16);
+    border:1px solid rgba(255,255,255,.35);padding:7px 14px;border-radius:30px;font-weight:700;font-size:14px;margin-bottom:18px}
+  .hero h1{font-size:clamp(40px,6vw,68px);line-height:1.05;font-weight:800;margin-bottom:16px}
+  .hero p.lead{font-size:20px;opacity:.95;margin-bottom:28px;max-width:540px}
+  @media(max-width:860px){.hero p.lead{margin-inline:auto}}
+  .hero-cta{display:flex;gap:14px;flex-wrap:wrap}
+  @media(max-width:860px){.hero-cta{justify-content:center}}
+  .hero-art{display:flex;justify-content:center}
+  .hero-art img{width:min(300px,70%);border-radius:26%;
+    box-shadow:0 30px 60px rgba(26,17,64,.45);animation:float 5s ease-in-out infinite}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+
+  /* SECTION */
+  section{padding:72px 0}
+  .eyebrow{font-family:'Baloo 2';font-weight:700;color:var(--purple);text-transform:uppercase;
+    letter-spacing:1.5px;font-size:14px;margin-bottom:8px}
+  h2.title{font-size:clamp(28px,4vw,40px);font-weight:800;margin-bottom:14px}
+  .sub{font-size:18px;opacity:.8;max-width:680px;margin-bottom:40px}
+  .center{text-align:center}.center .sub{margin-inline:auto}
+
+  /* COMPLIANCE */
+  .compliance{background:#fff;border:2px solid rgba(124,77,255,.14);border-radius:28px;padding:34px;
+    display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:760px){.compliance{grid-template-columns:1fr}}
+  .crow{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:16px;background:var(--bg)}
+  .crow .ic{font-size:22px;line-height:1}
+  .crow.no .ic{filter:grayscale(0)}
+  .crow b{font-family:'Baloo 2'}
+  .crow.yes{background:rgba(46,196,166,.12)}
+  .crow.no{background:rgba(255,111,125,.10)}
+
+  /* FEATURES */
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+  @media(max-width:920px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:520px){.grid{grid-template-columns:1fr}}
+  .feat{background:#fff;border-radius:22px;padding:26px 22px;box-shadow:0 8px 24px rgba(45,33,80,.07);
+    transition:.2s;border:1px solid rgba(45,33,80,.05)}
+  .feat:hover{transform:translateY(-5px);box-shadow:0 16px 34px rgba(45,33,80,.12)}
+  .feat .fic{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;font-size:26px;margin-bottom:14px}
+  .feat h3{font-size:19px;margin-bottom:6px}
+  .feat p{font-size:15px;opacity:.8}
+
+  /* SCREENS */
+  .screens-wrap{background:var(--grad);border-radius:34px;padding:56px 22px;color:#fff}
+  .rail{display:flex;gap:26px;overflow-x:auto;padding:8px 4px 22px;scroll-snap-type:x mandatory}
+  .rail::-webkit-scrollbar{height:8px}
+  .rail::-webkit-scrollbar-thumb{background:rgba(255,255,255,.4);border-radius:4px}
+  .phone{flex:0 0 auto;width:268px;height:560px;background:#0e0a1f;border-radius:40px;padding:11px;
+    box-shadow:0 24px 50px rgba(26,17,64,.5);scroll-snap-align:center;position:relative}
+  .phone .notch{position:absolute;top:18px;left:50%;transform:translateX(-50%);width:96px;height:22px;
+    background:#0e0a1f;border-radius:0 0 16px 16px;z-index:6}
+  .scr{width:100%;height:100%;border-radius:30px;overflow:hidden;position:relative;display:flex;flex-direction:column}
+  .sbar{display:flex;justify-content:space-between;align-items:center;padding:9px 18px 2px;font-size:12px;font-weight:800}
+  .sbar .dots{display:flex;gap:4px;align-items:center}
+  .sbar .dots i{width:7px;height:7px;border-radius:50%;background:currentColor;display:inline-block;opacity:.9}
+  .caption{text-align:center;margin-top:14px;font-family:'Baloo 2';font-weight:600;font-size:15px;opacity:.95}
+
+  /* screen content helpers */
+  .grad{background:var(--grad);color:#fff}
+  .light{background:var(--bg);color:var(--ink)}
+  .dark{background:#000;color:#fff}
+  .scr .body{flex:1;display:flex;flex-direction:column;padding:14px 16px}
+  .center-col{align-items:center;justify-content:center;text-align:center;gap:10px}
+  .miniicon{width:74px;height:74px;border-radius:22px}
+  .glass{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);border-radius:16px;
+    padding:12px;font-size:11.5px;line-height:1.5}
+  .wbtn{background:#fff;color:var(--purple);font-family:'Baloo 2';font-weight:700;border-radius:14px;
+    padding:11px;text-align:center;font-size:14px;width:100%}
+  .pbtn{background:var(--purple);color:#fff;font-family:'Baloo 2';font-weight:700;border-radius:14px;
+    padding:11px;text-align:center;font-size:14px;width:100%}
+  .obtn{background:var(--orange);color:#fff;font-family:'Baloo 2';font-weight:700;border-radius:13px;
+    padding:10px;text-align:center;font-size:13px;flex:1}
+  .ghbtn{border:1.5px solid rgba(255,255,255,.4);color:#fff;font-family:'Baloo 2';font-weight:700;
+    border-radius:13px;padding:10px;text-align:center;font-size:13px;flex:1}
+  .topbar{display:flex;align-items:center;gap:8px;padding:4px 2px 12px}
+  .topbar .mi{width:30px;height:30px;border-radius:9px}
+  .topbar .nm{font-family:'Baloo 2';font-weight:800;font-size:16px}
+  .chip{margin-left:auto;background:rgba(46,196,166,.16);color:var(--green);font-weight:800;
+    font-size:11px;padding:5px 10px;border-radius:12px;display:flex;gap:5px;align-items:center}
+  .lock{font-size:17px;opacity:.6;margin-left:8px}
+  .tiles{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:6px}
+  .tile{border-radius:20px;padding:16px 10px;color:#fff;text-align:center;display:flex;flex-direction:column;gap:6px;
+    box-shadow:0 6px 14px rgba(45,33,80,.18)}
+  .tile .em{font-size:34px}.tile .lb{font-family:'Baloo 2';font-weight:800;font-size:15px}
+  .hi{font-family:'Baloo 2';font-weight:800;font-size:21px}
+  .videoarea{aspect-ratio:16/9;border-radius:14px;background:
+    radial-gradient(circle at 50% 45%,rgba(255,255,255,.18),rgba(0,0,0,0) 60%),linear-gradient(135deg,#2b1b53,#0b0720);
+    display:grid;place-items:center;margin:6px 0 10px}
+  .playg{width:54px;height:54px;border-radius:50%;background:rgba(255,255,255,.92);display:grid;place-items:center}
+  .playg::after{content:"";border-left:18px solid var(--purple);border-top:11px solid transparent;
+    border-bottom:11px solid transparent;margin-left:5px}
+  .vtitle{font-weight:800;font-size:14px}.vchan{font-size:12px;opacity:.6;margin-top:2px}
+  .prog{display:flex;gap:4px;margin:12px 0}
+  .prog i{flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.22)}
+  .prog i.on{background:var(--orange)}
+  .card2{background:#fff;border-radius:16px;padding:12px;margin-bottom:11px;box-shadow:0 4px 12px rgba(45,33,80,.06)}
+  .card2 .ct{font-family:'Baloo 2';font-weight:700;font-size:13px;display:flex;align-items:center;gap:7px;margin-bottom:9px;color:var(--purple)}
+  .field{border:1.5px solid #e3def5;border-radius:10px;padding:9px;font-size:11px;color:#9a93b5}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .ch{font-size:11px;font-weight:700;padding:6px 10px;border-radius:12px;background:var(--bg);border:1.5px solid #e3def5}
+  .ch.sel{background:var(--purple);color:#fff;border-color:var(--purple)}
+  .row2{display:flex;align-items:center;font-size:12px;font-weight:700;padding:5px 0}
+  .stepper{margin-left:auto;display:flex;align-items:center;gap:9px}
+  .stepper b{width:22px;height:22px;border-radius:8px;background:#efeafc;display:grid;place-items:center;color:var(--purple)}
+
+  /* TECH / FOOTER */
+  .tech{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+  .pill{background:#fff;border:1px solid rgba(45,33,80,.08);border-radius:30px;padding:10px 18px;font-weight:700;
+    box-shadow:0 4px 12px rgba(45,33,80,.05)}
+  footer{background:var(--ink);color:#fff;padding:46px 0;text-align:center}
+  footer .brand{justify-content:center;margin-bottom:14px;color:#fff}
+  footer a.small{color:#cfc6f5;margin:0 12px;font-weight:700}
+  footer .note{opacity:.6;font-size:13px;margin-top:18px;max-width:680px;margin-inline:auto}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="img/app_icon.png" alt="KidKat"/> KidKat</a>
+    <div class="nav-links">
+      <a class="small" href="#compliance">Compliance</a>
+      <a class="small" href="#features">Features</a>
+      <a class="small" href="#screens">Screens</a>
+      <a class="btn btn-dark" href="https://github.com/naveenneog/KidKat/releases/latest">⬇ Download APK</a>
+    </div>
+  </div>
+</nav>
+
+<header id="top">
+  <span class="spark" style="width:14px;height:14px;top:60px;left:8%"></span>
+  <span class="spark" style="width:9px;height:9px;top:120px;right:12%"></span>
+  <span class="spark" style="width:18px;height:18px;bottom:80px;left:18%;opacity:.3"></span>
+  <span class="spark" style="width:11px;height:11px;bottom:140px;right:22%"></span>
+  <div class="wrap hero">
+    <div>
+      <span class="hero-badge">🎓 Educational • 🛡️ Safe • ⏱️ No doomscroll</span>
+      <h1>Only the good stuff,<br/>for curious kids.</h1>
+      <p class="lead">KidKat plays a <b>finite</b> stream of short <b>educational</b> videos you approve — in the official YouTube player. No endless feed, no algorithm rabbit holes.</p>
+      <div class="hero-cta">
+        <a class="btn btn-dark" href="https://github.com/naveenneog/KidKat/releases/latest">⬇ Download Android APK</a>
+        <a class="btn btn-ghost" href="https://github.com/naveenneog/KidKat">★ View on GitHub</a>
+      </div>
+    </div>
+    <div class="hero-art"><img src="img/app_icon.png" alt="KidKat app icon"/></div>
+  </div>
+</header>
+
+<section id="compliance">
+  <div class="wrap">
+    <div class="center">
+      <div class="eyebrow">Built the right way</div>
+      <h2 class="title">Within YouTube's Terms — by design</h2>
+      <p class="sub">The “log into YouTube Kids and override the algorithm” idea isn’t allowed or even possible. KidKat achieves the same goal the compliant way.</p>
+    </div>
+    <div class="compliance">
+      <div class="crow no"><span class="ic">❌</span><div><b>No YouTube Kids login</b><br/><span style="opacity:.75;font-size:14px">There is no public Kids API — child accounts are COPPA-restricted.</span></div></div>
+      <div class="crow yes"><span class="ic">✅</span><div><b>Official Data API v3 discovery</b><br/><span style="opacity:.75;font-size:14px">Search + metadata only, with strict Safe Search.</span></div></div>
+      <div class="crow no"><span class="ic">❌</span><div><b>No algorithm override</b><br/><span style="opacity:.75;font-size:14px">We never read or alter YouTube’s recommendations.</span></div></div>
+      <div class="crow yes"><span class="ic">✅</span><div><b>Official IFrame player</b><br/><span style="opacity:.75;font-size:14px">No stream extraction — creators keep their views.</span></div></div>
+      <div class="crow no"><span class="ic">❌</span><div><b>No child PII</b><br/><span style="opacity:.75;font-size:14px">Profiles &amp; controls live on-device. No tracking SDKs.</span></div></div>
+      <div class="crow yes"><span class="ic">✅</span><div><b>Parent-curated allowlist</b><br/><span style="opacity:.75;font-size:14px">Our own curation: trusted channels + Education/Science only.</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="features" style="background:#fff">
+  <div class="wrap">
+    <div class="center">
+      <div class="eyebrow">What's inside</div>
+      <h2 class="title">Features kids love, parents trust</h2>
+      <p class="sub">Everything is tuned to keep learning fun and finite.</p>
+    </div>
+    <div class="grid">
+      <div class="feat"><div class="fic" style="background:rgba(124,77,255,.12)">🧩</div><h3>Finite sessions</h3><p>A set number of videos, then a friendly break screen. No infinite feed.</p></div>
+      <div class="feat"><div class="fic" style="background:rgba(46,196,166,.14)">⏱️</div><h3>Daily time limit</h3><p>When time’s up, the app locks until tomorrow. Parents can extend.</p></div>
+      <div class="feat"><div class="fic" style="background:rgba(255,154,46,.16)">👆</div><h3>Deliberate “Next”</h3><p>Advancing is a tap, never a swipe. Related videos stay on-channel.</p></div>
+      <div class="feat"><div class="fic" style="background:rgba(255,111,165,.14)">🔒</div><h3>Parent PIN gate</h3><p>All settings are protected behind a 4-digit parent PIN.</p></div>
+      <div class="feat"><div class="fic" style="background:rgba(92,124,250,.14)">✅</div><h3>Approved channels</h3><p>One-tap trusted channels (SciShow Kids, TED-Ed, Nat Geo Kids…) or add your own.</p></div>
+      <div class="feat"><div class="fic" style="background:rgba(255,210,63,.22)">🎓</div><h3>12 learning topics</h3><p>Science, Space, Animals, Math, Reading, Art, Coding, and more.</p></div>
+      <div class="feat"><div class="fic" style="background:rgba(25,200,255,.14)">🛡️</div><h3>Strict Safe Search</h3><p>Embeddable-only, short-only (≤1 or ≤4 min), category-filtered.</p></div>
+      <div class="feat"><div class="fic" style="background:rgba(45,33,80,.10)">📱</div><h3>Android &amp; iOS</h3><p>One Flutter codebase. Riverpod, go_router, official IFrame player.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="screens">
+  <div class="wrap">
+    <div class="screens-wrap">
+      <div class="center" style="color:#fff">
+        <div class="eyebrow" style="color:#fff;opacity:.85">Take a peek</div>
+        <h2 class="title">Explore the app screens</h2>
+        <p class="sub" style="opacity:.9">Swipe through the experience — from setup to a safe, finite watching session.</p>
+      </div>
+      <div class="rail">
+
+        <div>
+          <div class="phone"><div class="notch"></div>
+            <div class="scr grad">
+              <div class="sbar"><span>9:41</span><span class="dots"><i></i><i></i><i></i></span></div>
+              <div class="body center-col">
+                <img class="miniicon" style="width:96px;height:96px;border-radius:26px" src="img/app_icon.png" alt=""/>
+                <div class="display" style="font-size:30px;font-weight:800">KidKat</div>
+                <div style="opacity:.92;font-size:13px">Educational shorts for curious kids</div>
+                <div class="glass" style="margin:8px 0">Only short, educational videos you approve — in the official player. Finite sessions, no endless scrolling.</div>
+                <div style="flex:1"></div>
+                <div class="wbtn">Let's set up →</div>
+              </div>
+            </div>
+          </div>
+          <div class="caption">Welcome &amp; setup</div>
+        </div>
+
+        <div>
+          <div class="phone"><div class="notch"></div>
+            <div class="scr light">
+              <div class="sbar" style="color:var(--ink)"><span>9:41</span><span class="dots"><i></i><i></i><i></i></span></div>
+              <div class="body">
+                <div class="topbar"><img class="mi" src="img/app_icon.png" alt=""/><span class="nm">KidKat</span>
+                  <span class="chip">⏱ 30:00 left</span><span class="lock">🔒</span></div>
+                <div class="hi">Hi there! 👋</div>
+                <div style="font-size:12.5px;opacity:.65;margin-top:2px">What do you want to learn today?</div>
+                <div class="tiles">
+                  <div class="tile" style="background:#5C7CFA"><span class="em">🔬</span><span class="lb">Science</span></div>
+                  <div class="tile" style="background:#7C4DFF"><span class="em">🚀</span><span class="lb">Space</span></div>
+                  <div class="tile" style="background:#FF9A2E"><span class="em">🦁</span><span class="lb">Animals</span></div>
+                  <div class="tile" style="background:#E0457B"><span class="em">🎨</span><span class="lb">Art</span></div>
+                </div>
+                <div style="flex:1"></div>
+                <div class="pbtn">▶ Start watching</div>
+              </div>
+            </div>
+          </div>
+          <div class="caption">Kid home</div>
+        </div>
+
+        <div>
+          <div class="phone"><div class="notch"></div>
+            <div class="scr dark">
+              <div class="sbar"><span>9:41</span><span class="dots"><i></i><i></i><i></i></span></div>
+              <div class="body">
+                <div style="display:flex;align-items:center;font-size:13px;font-weight:700;padding:2px 0 4px">
+                  <span style="font-size:18px">✕</span>
+                  <span style="margin:0 auto;background:rgba(255,255,255,.15);padding:4px 12px;border-radius:12px;font-size:12px">Video 2 of 8</span>
+                  <span style="width:18px"></span>
+                </div>
+                <div class="videoarea"><div class="playg"></div></div>
+                <div class="vtitle">How do volcanoes erupt? 🌋</div>
+                <div class="vchan">SciShow Kids</div>
+                <div class="prog"><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                <div style="flex:1"></div>
+                <div style="display:flex;gap:10px"><div class="ghbtn">✓ I'm done</div><div class="obtn">Next ⏭</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="caption">Safe session player</div>
+        </div>
+
+        <div>
+          <div class="phone"><div class="notch"></div>
+            <div class="scr light">
+              <div class="sbar" style="color:var(--ink)"><span>9:41</span><span class="dots"><i></i><i></i><i></i></span></div>
+              <div class="body" style="overflow:hidden">
+                <div style="display:flex;align-items:center;gap:8px;font-family:'Baloo 2';font-weight:800;font-size:16px;padding:2px 0 10px">← Parent settings</div>
+                <div class="card2"><div class="ct">🔑 YouTube Data API key</div><div class="field">•••••••••••••••••••• 💾</div></div>
+                <div class="card2"><div class="ct">🎯 Interests</div><div class="chips"><span class="ch sel">🔬 Science</span><span class="ch sel">🚀 Space</span><span class="ch">➗ Math</span><span class="ch sel">🎨 Art</span></div></div>
+                <div class="card2"><div class="ct">⏱️ Time &amp; limits</div>
+                  <div class="row2">Daily limit<span class="stepper"><b>−</b>30 min<b>+</b></span></div>
+                  <div class="row2">Videos / session<span class="stepper"><b>−</b>8<b>+</b></span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="caption">Parent dashboard</div>
+        </div>
+
+        <div>
+          <div class="phone"><div class="notch"></div>
+            <div class="scr grad">
+              <div class="sbar"><span>9:41</span><span class="dots"><i></i><i></i><i></i></span></div>
+              <div class="body center-col">
+                <div style="font-size:64px">🎉</div>
+                <div class="display" style="font-size:30px;font-weight:800">Great job!</div>
+                <div style="font-size:13.5px;opacity:.95">You finished your learning session. Time to rest your eyes and play! 🐱</div>
+                <div style="flex:1"></div>
+                <div class="wbtn">🏠 Back home</div>
+              </div>
+            </div>
+          </div>
+          <div class="caption">Break time</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:#fff">
+  <div class="wrap center">
+    <div class="eyebrow">Under the hood</div>
+    <h2 class="title">Open-source &amp; built with Flutter</h2>
+    <p class="sub">Cross-platform, tested, and ToS-aware.</p>
+    <div class="tech">
+      <span class="pill">🐦 Flutter</span><span class="pill">🎯 Dart</span><span class="pill">💧 Riverpod</span>
+      <span class="pill">🧭 go_router</span><span class="pill">▶️ youtube_player_iframe</span>
+      <span class="pill">✅ 36 tests</span><span class="pill">🤖 Android</span><span class="pill">🍎 iOS</span>
+    </div>
+    <div style="margin-top:34px">
+      <a class="btn btn-primary" href="https://github.com/naveenneog/KidKat/releases/latest">⬇ Get the Android APK</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="img/app_icon.png" alt="" style="width:38px;border-radius:10px"/> KidKat</a>
+    <div>
+      <a class="small" href="https://github.com/naveenneog/KidKat">GitHub</a>
+      <a class="small" href="https://github.com/naveenneog/KidKat/releases/latest">Releases</a>
+      <a class="small" href="https://github.com/naveenneog/KidKat/blob/main/README.md">Docs</a>
+    </div>
+    <p class="note">KidKat is an independent project and is not affiliated with or endorsed by YouTube or Google. It uses the official YouTube Data API and IFrame player in line with the YouTube API Services Terms of Service. Review platform policies before publishing.</p>
+  </div>
+</footer>
+
+</body>
+</html>
