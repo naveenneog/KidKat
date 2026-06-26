@@ -19,11 +19,12 @@ curated front-end built entirely on official, permitted YouTube building blocks.
 ## 📱 Screenshots
 
 <p align="center">
-  <img src="docs/img/screen-1.png" width="19%" alt="Welcome &amp; setup"/>
-  <img src="docs/img/screen-2.png" width="19%" alt="Kid home"/>
-  <img src="docs/img/screen-3.png" width="19%" alt="Safe session player"/>
-  <img src="docs/img/screen-4.png" width="19%" alt="Parent dashboard"/>
-  <img src="docs/img/screen-5.png" width="19%" alt="Break time"/>
+  <img src="docs/img/screen-1.png" width="16%" alt="Welcome &amp; setup"/>
+  <img src="docs/img/screen-2.png" width="16%" alt="Kid home"/>
+  <img src="docs/img/screen-3.png" width="16%" alt="Swipe-to-navigate player"/>
+  <img src="docs/img/screen-4.png" width="16%" alt="Parent dashboard"/>
+  <img src="docs/img/screen-5.png" width="16%" alt="Break time"/>
+  <img src="docs/img/screen-6.png" width="16%" alt="Saved videos"/>
 </p>
 
 > ▶️ **Explore the interactive site:** https://naveenneog.github.io/KidKat/
@@ -54,14 +55,19 @@ algorithm" — is **not** possible or permitted:
 
 - **Finite sessions** — a fixed number of videos per session, then a *break* screen. No infinite feed.
 - **Daily time limit** — when it's reached, the app locks until tomorrow (parent can extend).
-- **Deliberate "Next"** — advancing is a button tap, never an endless swipe; related-video suggestions are restricted to the same channel.
+- **Swipe-friendly player** — swipe **up = next**, **down = previous** (plus tap to pause and clear Back/Next buttons), all within a **finite** session; related-video suggestions are restricted to the same channel.
 - **Parent PIN gate** on all settings.
 - **Strict Safe Search**, **embeddable-only**, **short-only** (≤1 min or ≤4 min) filtering.
 
 ## ✨ Features
 
-- 🐱 Friendly graduate-cat branding, kid-first UI (big tiles, rounded everything).
-- 👪 Parent dashboard: API key, interests, **approved-channel allowlist** (one-tap trusted channels), daily limit, videos-per-session, video length, Safe Search, reset today's time.
+- 🐱 Friendly 3D graduate-cat branding, kid-first UI (big tiles, rounded everything).
+- 📲 **Swipe up/down** to change videos (works over the YouTube player), tap to pause, Back/Next buttons.
+- 🔖 **Bookmark & Saved videos** — save favorites and replay them from a Saved screen.
+- 🔁 **No repeats** — already-watched videos are skipped in future sessions.
+- 🎨 **5 colorful themes** (Purple Pop, Candy Bright, Ocean, Sunset, Forest).
+- 🧒 **Age bands** (3–5 / 6–8 / 9–12) pre-load age-appropriate trusted channels and bias searches.
+- 👪 Parent dashboard: API key (guided setup), interests, **approved-channel allowlist**, daily limit, videos-per-session, video length, Safe Search, reset today's time.
 - 🎓 12 learning interests (Science, Space, Animals, Math, Reading, Nature, Art, Music, Coding, Geography, History, Human Body).
 - ⏱️ Live "time left today" indicator.
 

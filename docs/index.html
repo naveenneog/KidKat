@@ -226,9 +226,13 @@
     <div class="grid">
       <div class="feat"><div class="fic" style="background:rgba(124,77,255,.12)">🧩</div><h3>Finite sessions</h3><p>A set number of videos, then a friendly break screen. No infinite feed.</p></div>
       <div class="feat"><div class="fic" style="background:rgba(46,196,166,.14)">⏱️</div><h3>Daily time limit</h3><p>When time’s up, the app locks until tomorrow. Parents can extend.</p></div>
-      <div class="feat"><div class="fic" style="background:rgba(255,154,46,.16)">📺</div><h3>Full-screen shorts</h3><p>Immersive full-screen playback. Advancing is a deliberate tap, never a swipe; related videos stay on-channel.</p></div>
+      <div class="feat"><div class="fic" style="background:rgba(255,154,46,.16)">📺</div><h3>Full-screen player</h3><p>Big, immersive playback with slim, kid-friendly controls and on-channel related videos.</p></div>
+      <div class="feat"><div class="fic" style="background:rgba(124,77,255,.14)">📲</div><h3>Swipe up &amp; down</h3><p>Swipe up for the next video, down to go back — just like kids expect. Tap to pause; clear Back/Next buttons too.</p></div>
+      <div class="feat"><div class="fic" style="background:rgba(255,210,63,.22)">🔖</div><h3>Save favorites</h3><p>Bookmark a video while watching and replay it anytime from the Saved screen.</p></div>
+      <div class="feat"><div class="fic" style="background:rgba(46,196,166,.16)">🔁</div><h3>No repeats</h3><p>Already-watched videos are skipped, so kids keep discovering something new.</p></div>
       <div class="feat"><div class="fic" style="background:rgba(255,111,165,.14)">🔒</div><h3>Parent PIN gate</h3><p>All settings are protected behind a 4-digit parent PIN.</p></div>
       <div class="feat"><div class="fic" style="background:rgba(92,124,250,.14)">🧒</div><h3>Age-appropriate channels</h3><p>Set your child's age (3–5, 6–8, 9–12) and KidKat pre-loads trusted channels and tailors searches to fit.</p></div>
+      <div class="feat"><div class="fic" style="background:rgba(236,72,153,.14)">🎨</div><h3>5 colorful themes</h3><p>Purple Pop, Candy Bright, Ocean, Sunset, Forest — switch the whole app's look.</p></div>
       <div class="feat"><div class="fic" style="background:rgba(255,210,63,.22)">🎓</div><h3>12 learning topics</h3><p>Science, Space, Animals, Math, Reading, Art, Coding, and more.</p></div>
       <div class="feat"><div class="fic" style="background:rgba(25,200,255,.14)">🛡️</div><h3>Strict Safe Search</h3><p>Embeddable-only, short-only (≤1 or ≤4 min), category-filtered.</p></div>
       <div class="feat"><div class="fic" style="background:rgba(45,33,80,.10)">📱</div><h3>Android &amp; iOS</h3><p>One Flutter codebase. Riverpod, go_router, official IFrame player.</p></div>
@@ -317,8 +321,8 @@
                 <div class="sbar" style="padding:0 0 8px"><span>9:41</span><span class="dots"><i></i><i></i><i></i></span></div>
                 <div style="display:flex;align-items:center;font-weight:700">
                   <span style="font-size:18px">✕</span>
-                  <span style="margin:0 auto;background:rgba(255,255,255,.18);padding:5px 12px;border-radius:12px;font-size:12px">🎓 Video 2 of 8</span>
-                  <span style="width:18px"></span>
+                  <span style="margin:0 auto;background:rgba(255,255,255,.18);padding:5px 12px;border-radius:12px;font-size:12px">🎓 2 / 8</span>
+                  <span style="font-size:18px">🔖</span>
                 </div>
               </div>
               <!-- bottom overlay -->
@@ -330,7 +334,7 @@
               </div>
             </div>
           </div>
-          <div class="caption">Full-screen shorts player</div>
+          <div class="caption">Swipe-to-navigate player</div>
         </div>
 
         <div>
@@ -367,6 +371,35 @@
           <div class="caption">Break time</div>
         </div>
 
+        <div>
+          <div class="phone"><div class="notch"></div>
+            <div class="scr light">
+              <div class="sbar" style="color:var(--ink)"><span>9:41</span><span class="dots"><i></i><i></i><i></i></span></div>
+              <div class="body" style="overflow:hidden">
+                <div style="display:flex;align-items:center;gap:8px;font-family:'Baloo 2';font-weight:800;font-size:16px;padding:2px 0 12px">← 🔖 Saved videos</div>
+                <div class="card2" style="display:flex;gap:10px;align-items:center;padding:9px">
+                  <div style="width:72px;height:46px;border-radius:10px;background:linear-gradient(135deg,#5C7CFA,#19C8FF)"></div>
+                  <div style="flex:1"><div style="font-weight:700;font-size:12px">How do volcanoes erupt? 🌋</div><div style="font-size:10.5px;opacity:.6">SciShow Kids</div></div>
+                  <span style="color:var(--purple);font-size:16px">🔖</span>
+                </div>
+                <div class="card2" style="display:flex;gap:10px;align-items:center;padding:9px">
+                  <div style="width:72px;height:46px;border-radius:10px;background:linear-gradient(135deg,#FF9A2E,#FF6FA5)"></div>
+                  <div style="flex:1"><div style="font-weight:700;font-size:12px">Why is the sky blue? 🌈</div><div style="font-size:10.5px;opacity:.6">Nat Geo Kids</div></div>
+                  <span style="color:var(--purple);font-size:16px">🔖</span>
+                </div>
+                <div class="card2" style="display:flex;gap:10px;align-items:center;padding:9px">
+                  <div style="width:72px;height:46px;border-radius:10px;background:linear-gradient(135deg,#2EC4A6,#84CC16)"></div>
+                  <div style="flex:1"><div style="font-weight:700;font-size:12px">Counting by 2s 🔢</div><div style="font-size:10.5px;opacity:.6">Numberblocks</div></div>
+                  <span style="color:var(--purple);font-size:16px">🔖</span>
+                </div>
+                <div style="flex:1"></div>
+                <div class="pbtn">▶ Play all saved</div>
+              </div>
+            </div>
+          </div>
+          <div class="caption">Saved videos 🔖</div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -380,7 +413,7 @@
     <div class="tech">
       <span class="pill">🐦 Flutter</span><span class="pill">🎯 Dart</span><span class="pill">💧 Riverpod</span>
       <span class="pill">🧭 go_router</span><span class="pill">▶️ youtube_player_iframe</span>
-      <span class="pill">✅ 36 tests</span><span class="pill">🤖 Android</span><span class="pill">🍎 iOS</span>
+      <span class="pill">✅ 45 tests</span><span class="pill">🤖 Android</span><span class="pill">🍎 iOS</span>
     </div>
     <div style="margin-top:34px">
       <a class="btn btn-primary" href="https://github.com/naveenneog/KidKat/releases/latest">⬇ Get the Android APK</a>
