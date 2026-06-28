@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
+import '../../core/palette.dart';
 import '../../core/theme.dart';
 import '../../data/models/kid_video.dart';
 import '../../data/providers.dart';
@@ -42,6 +43,12 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
   bool _isPlaying = false;
   bool _ended = false;
   bool _navigated = false;
+  // True while a newly-selected video is loading. We cover the player with a
+  // branded overlay during this window so the YouTube IFrame's own chrome
+  // (the previous video's title/avatar, logo and related-video card) is never
+  // shown to the child between clips.
+  bool _switching = false;
+  Timer? _switchTimer;
   int _pendingSeconds = 0;
   String? _error;
   bool _showHint = true;
@@ -109,8 +116,10 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
         _queue = videos;
         _index = 0;
         _loading = false;
+        _switching = true;
         _controller = controller;
       });
+      _armSwitchTimeout();
       _gestureTimer = Timer.periodic(
           const Duration(milliseconds: 150), (_) => _pollGestures());
       await controller.loadVideoById(videoId: videos.first.id);
@@ -142,11 +151,25 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
     if (playing != _isPlaying && mounted) {
       setState(() => _isPlaying = playing);
     }
+    // Lift the transition overlay as soon as the new clip actually starts.
+    if (playing && _switching && mounted) {
+      _switchTimer?.cancel();
+      setState(() => _switching = false);
+    }
     if (value.playerState == PlayerState.ended && !_ended) {
       _ended = true;
       if (mounted) setState(() {});
       Future.delayed(const Duration(milliseconds: 1200), _next);
     }
+  }
+
+  // Fail-safe: if a clip never reports "playing" (e.g. it can't be embedded),
+  // drop the overlay anyway so the child is never stuck on a branded screen.
+  void _armSwitchTimeout() {
+    _switchTimer?.cancel();
+    _switchTimer = Timer(const Duration(seconds: 6), () {
+      if (mounted && _switching) setState(() => _switching = false);
+    });
   }
 
   void _togglePlay() {
@@ -194,7 +217,11 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
       _goOnce('/break');
       return;
     }
-    setState(() => _index++);
+    setState(() {
+      _index++;
+      _switching = true;
+    });
+    _armSwitchTimeout();
     _controller?.loadVideoById(videoId: _queue[_index].id);
   }
 
@@ -202,7 +229,11 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
     if (_navigated || _index == 0) return;
     _flush();
     _ended = false;
-    setState(() => _index--);
+    setState(() {
+      _index--;
+      _switching = true;
+    });
+    _armSwitchTimeout();
     _controller?.loadVideoById(videoId: _queue[_index].id);
   }
 
@@ -258,6 +289,7 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
   void dispose() {
     _ticker?.cancel();
     _gestureTimer?.cancel();
+    _switchTimer?.cancel();
     _sub?.cancel();
     _flush();
     _controller?.close();
@@ -273,6 +305,7 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
 
     final video = _queue[_index];
     final isLast = _index >= _queue.length - 1;
+    final palette = ref.watch(paletteProvider);
 
     return PopScope(
       canPop: false,
@@ -286,19 +319,27 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
             children: [
               _topBar(video),
               Expanded(
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    return YoutubePlayer(
-                      controller: _controller!,
-                      aspectRatio: constraints.maxWidth / constraints.maxHeight,
-                      enableFullScreenOnVerticalDrag: false,
-                      autoFullScreen: false,
-                      backgroundColor: Colors.black,
-                    );
-                  },
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        return YoutubePlayer(
+                          controller: _controller!,
+                          aspectRatio:
+                              constraints.maxWidth / constraints.maxHeight,
+                          enableFullScreenOnVerticalDrag: false,
+                          autoFullScreen: false,
+                          backgroundColor: Colors.black,
+                        );
+                      },
+                    ),
+                    if (_switching)
+                      _TransitionOverlay(color: palette.accent),
+                  ],
                 ),
               ),
-              _bottomBar(video, isLast),
+              _bottomBar(video, isLast, palette),
             ],
           ),
         ),
@@ -357,7 +398,7 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
     );
   }
 
-  Widget _bottomBar(KidVideo video, bool isLast) {
+  Widget _bottomBar(KidVideo video, bool isLast, AppPalette palette) {
     return Container(
       color: Colors.black,
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
@@ -386,7 +427,8 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
             ],
           ),
           const SizedBox(height: 8),
-          _ProgressDots(total: _queue.length, index: _index),
+          _ProgressDots(
+              total: _queue.length, index: _index, color: palette.secondary),
           const SizedBox(height: 10),
           Row(
             children: [
@@ -410,7 +452,8 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
               Expanded(
                 child: ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: KidColors.orange,
+                    backgroundColor: palette.secondary,
+                    foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 13),
                   ),
                   onPressed: _next,
@@ -477,9 +520,11 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
 }
 
 class _ProgressDots extends StatelessWidget {
-  const _ProgressDots({required this.total, required this.index});
+  const _ProgressDots(
+      {required this.total, required this.index, required this.color});
   final int total;
   final int index;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -492,13 +537,41 @@ class _ProgressDots extends StatelessWidget {
               margin: const EdgeInsets.symmetric(horizontal: 2),
               decoration: BoxDecoration(
                 color: i <= index
-                    ? KidColors.orange
+                    ? color
                     : Colors.white.withValues(alpha: 0.25),
                 borderRadius: BorderRadius.circular(3),
               ),
             ),
           ),
       ],
+    );
+  }
+}
+
+/// Branded cover shown over the player while a new clip is loading. It hides
+/// the YouTube IFrame's own chrome (title/avatar of the previous clip, the
+/// YouTube logo and related-video card) during the transition between videos.
+class _TransitionOverlay extends StatelessWidget {
+  const _TransitionOverlay({required this.color});
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.black,
+      alignment: Alignment.center,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const KidLogo(size: 72),
+          const SizedBox(height: 18),
+          SizedBox(
+            width: 28,
+            height: 28,
+            child: CircularProgressIndicator(color: color, strokeWidth: 3),
+          ),
+        ],
+      ),
     );
   }
 }

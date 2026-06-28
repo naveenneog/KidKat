@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../core/theme.dart';
 import '../data/providers.dart';
 
 /// Full-screen brand gradient (theme-aware) used on welcome / break screens.
@@ -99,7 +100,17 @@ class BigButton extends StatelessWidget {
     return ElevatedButton(
       style: color == null
           ? null
-          : ElevatedButton.styleFrom(backgroundColor: color),
+          : ElevatedButton.styleFrom(
+              backgroundColor: color,
+              // Keep the label/icon legible on light backgrounds: the global
+              // ElevatedButton theme forces a white foreground, which would be
+              // invisible on a white/pale button.
+              foregroundColor:
+                  ThemeData.estimateBrightnessForColor(color!) ==
+                          Brightness.light
+                      ? KidColors.ink
+                      : Colors.white,
+            ),
       onPressed: onPressed,
       child: Row(
         mainAxisSize: MainAxisSize.min,

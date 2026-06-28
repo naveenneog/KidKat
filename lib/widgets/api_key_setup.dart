@@ -144,8 +144,18 @@ class _ApiKeySetupState extends ConsumerState<ApiKeySetup> {
         TextField(
           controller: _ctrl,
           obscureText: true,
-          onChanged: (_) {
+          textInputAction: TextInputAction.go,
+          onSubmitted: (_) => _verify(),
+          onChanged: (v) {
             if (_state != _Setup.idle) setState(() => _state = _Setup.idle);
+            // If the parent edits the field after a key was saved, drop the
+            // saved key so the visible text and the key actually in use can't
+            // silently diverge (the app then treats YouTube as not connected
+            // until the new key is verified).
+            final saved = ref.read(parentConfigProvider).apiKey;
+            if (saved.isNotEmpty && v.trim() != saved) {
+              ref.read(parentConfigProvider.notifier).setApiKey('');
+            }
           },
           style: TextStyle(color: _fg),
           decoration: InputDecoration(

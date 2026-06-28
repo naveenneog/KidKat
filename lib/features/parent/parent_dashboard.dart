@@ -26,6 +26,7 @@ class _ParentDashboardState extends ConsumerState<ParentDashboard> {
     final config = ref.watch(parentConfigProvider);
     final notifier = ref.read(parentConfigProvider.notifier);
     final watched = ref.watch(watchTimeProvider);
+    final palette = ref.watch(paletteProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -102,7 +103,7 @@ class _ParentDashboardState extends ConsumerState<ParentDashboard> {
                   '${config.ageBand.label} — KidKat tailors channels and '
                   'searches to this age.',
                   style: TextStyle(
-                      fontSize: 12, color: KidColors.ink.withValues(alpha: .6)),
+                      fontSize: 12, color: palette.ink.withValues(alpha: .6)),
                 ),
                 Align(
                   alignment: Alignment.centerLeft,
@@ -131,12 +132,12 @@ class _ParentDashboardState extends ConsumerState<ParentDashboard> {
                 if (config.allowlist.isEmpty)
                   Text('No channels added yet.',
                       style: TextStyle(
-                          color: KidColors.ink.withValues(alpha: .6))),
+                          color: palette.ink.withValues(alpha: .6))),
                 for (final ch in config.allowlist)
                   ListTile(
                     contentPadding: EdgeInsets.zero,
-                    leading: const Icon(Icons.play_circle_outline,
-                        color: KidColors.purple),
+                    leading: Icon(Icons.play_circle_outline,
+                        color: palette.primary),
                     title: Text(ch.title),
                     trailing: IconButton(
                       icon: const Icon(Icons.delete_outline_rounded,
@@ -324,7 +325,7 @@ class _ParentDashboardState extends ConsumerState<ParentDashboard> {
   }
 }
 
-class _Section extends StatelessWidget {
+class _Section extends ConsumerWidget {
   const _Section({
     required this.title,
     required this.icon,
@@ -335,7 +336,8 @@ class _Section extends StatelessWidget {
   final Widget child;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final palette = ref.watch(paletteProvider);
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       child: Padding(
@@ -345,7 +347,7 @@ class _Section extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(icon, color: KidColors.purple),
+                Icon(icon, color: palette.primary),
                 const SizedBox(width: 8),
                 Text(title,
                     style: Theme.of(context).textTheme.titleMedium),

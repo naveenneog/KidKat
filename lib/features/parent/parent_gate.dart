@@ -48,6 +48,7 @@ class _ParentGateState extends ConsumerState<ParentGate> {
 
   @override
   Widget build(BuildContext context) {
+    final palette = ref.watch(paletteProvider);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -60,7 +61,7 @@ class _ParentGateState extends ConsumerState<ParentGate> {
         child: Column(
           children: [
             const SizedBox(height: 20),
-            const Icon(Icons.lock_rounded, size: 56, color: KidColors.purple),
+            Icon(Icons.lock_rounded, size: 56, color: palette.primary),
             const SizedBox(height: 12),
             Text('Enter parent PIN',
                 style: Theme.of(context).textTheme.titleLarge),
@@ -68,7 +69,7 @@ class _ParentGateState extends ConsumerState<ParentGate> {
             Text(
               _error ? 'Incorrect PIN, try again' : 'Keep kids in the safe zone',
               style: TextStyle(
-                  color: _error ? Colors.red : KidColors.ink.withValues(alpha: .6)),
+                  color: _error ? Colors.red : palette.ink.withValues(alpha: .6)),
             ),
             const SizedBox(height: 24),
             Row(
@@ -82,9 +83,9 @@ class _ParentGateState extends ConsumerState<ParentGate> {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: i < _entered.length
-                          ? KidColors.purple
+                          ? palette.primary
                           : Colors.transparent,
-                      border: Border.all(color: KidColors.purple, width: 2),
+                      border: Border.all(color: palette.primary, width: 2),
                     ),
                   ),
               ],

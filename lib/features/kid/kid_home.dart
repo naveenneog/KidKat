@@ -17,6 +17,7 @@ class KidHome extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final config = ref.watch(parentConfigProvider);
     final remaining = ref.watch(remainingSecondsProvider);
+    final palette = ref.watch(paletteProvider);
     final topics = config.selectedTopicIds
         .map(topicById)
         .whereType<Topic>()
@@ -43,7 +44,7 @@ class KidHome extends ConsumerWidget {
                           style: Theme.of(context)
                               .textTheme
                               .titleMedium
-                              ?.copyWith(color: KidColors.ink.withValues(alpha: .7)),
+                              ?.copyWith(color: palette.ink.withValues(alpha: .7)),
                         ),
                         const SizedBox(height: 20),
                         if (topics.isEmpty)
@@ -90,12 +91,13 @@ class KidHome extends ConsumerWidget {
   }
 }
 
-class _TopBar extends StatelessWidget {
+class _TopBar extends ConsumerWidget {
   const _TopBar({required this.remaining});
   final int remaining;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final palette = ref.watch(paletteProvider);
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
       child: Row(
@@ -109,17 +111,17 @@ class _TopBar extends StatelessWidget {
             padding:
                 const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
             decoration: BoxDecoration(
-              color: KidColors.green.withValues(alpha: 0.15),
+              color: palette.primary.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Row(
               children: [
-                const Icon(Icons.timer_outlined,
-                    size: 18, color: KidColors.green),
+                Icon(Icons.timer_outlined,
+                    size: 18, color: palette.primary),
                 const SizedBox(width: 6),
                 Text('${formatDuration(remaining)} left',
-                    style: const TextStyle(
-                        color: KidColors.green,
+                    style: TextStyle(
+                        color: palette.primary,
                         fontWeight: FontWeight.w700)),
               ],
             ),
@@ -127,13 +129,13 @@ class _TopBar extends StatelessWidget {
           IconButton(
             tooltip: 'Saved videos',
             onPressed: () => context.go('/saved'),
-            icon: const Icon(Icons.bookmark_rounded, color: KidColors.purple),
+            icon: Icon(Icons.bookmark_rounded, color: palette.primary),
           ),
           IconButton(
             tooltip: 'Parents',
             onPressed: () => context.go('/gate'),
-            icon: const Icon(Icons.lock_outline_rounded,
-                color: KidColors.ink),
+            icon: Icon(Icons.lock_outline_rounded,
+                color: palette.ink),
           ),
         ],
       ),

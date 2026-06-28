@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/theme.dart';
 import '../../data/models/session_args.dart';
 import '../../data/providers.dart';
 import '../../widgets/brand.dart';
@@ -14,6 +13,7 @@ class SavedScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final saved = ref.watch(savedVideosProvider);
+    final palette = ref.watch(paletteProvider);
 
     return Scaffold(
       body: KidBackdrop(
@@ -28,8 +28,8 @@ class SavedScreen extends ConsumerWidget {
                       icon: const Icon(Icons.arrow_back_rounded),
                       onPressed: () => context.go('/home'),
                     ),
-                    const Icon(Icons.bookmark_rounded,
-                        color: KidColors.purple),
+                    Icon(Icons.bookmark_rounded,
+                        color: palette.primary),
                     const SizedBox(width: 8),
                     Text('Saved videos',
                         style: Theme.of(context).textTheme.titleLarge),
@@ -62,10 +62,10 @@ class SavedScreen extends ConsumerWidget {
                                     errorBuilder: (_, _, _) => Container(
                                       width: 96,
                                       height: 64,
-                                      color: KidColors.purple
+                                      color: palette.primary
                                           .withValues(alpha: 0.15),
-                                      child: const Icon(Icons.movie_rounded,
-                                          color: KidColors.purple),
+                                      child: Icon(Icons.movie_rounded,
+                                          color: palette.primary),
                                     ),
                                   ),
                                 ),
@@ -86,15 +86,15 @@ class SavedScreen extends ConsumerWidget {
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
                                               fontSize: 12,
-                                              color: KidColors.ink
+                                              color: palette.ink
                                                   .withValues(alpha: 0.6))),
                                     ],
                                   ),
                                 ),
                                 IconButton(
                                   tooltip: 'Remove',
-                                  icon: const Icon(Icons.bookmark_rounded,
-                                      color: KidColors.purple),
+                                  icon: Icon(Icons.bookmark_rounded,
+                                      color: palette.primary),
                                   onPressed: () => ref
                                       .read(savedVideosProvider.notifier)
                                       .remove(v.id),

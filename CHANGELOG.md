@@ -3,6 +3,65 @@
 All notable changes, decisions, and approaches (including rejected ones) are
 recorded here so the project's history is traceable.
 
+## [0.6.0] — QA bug-fix pass (Senior QA review on Android emulator)
+
+A Senior-QA pass on an `android-34` emulator (driven via `adb` tap/swipe +
+screenshots + logcat) verified the core flows and surfaced a set of issues.
+All flows passed except the items below, which are now fixed.
+
+### Fixed
+- **Invisible button labels (white-on-white) — High.** `BigButton(color: …)` kept
+  the global ElevatedButton theme's white foreground, so light/white buttons
+  showed a blank pill (confirmed on the Break screen "Back home" button, plus
+  onboarding and Time-up). `BigButton` now derives a legible foreground from the
+  background's brightness (dark ink on light buttons, white on dark).
+- **Theme switch only partially applied — Medium.** Two parts:
+  1. **Candy Bright was purple-forward** because its palette had `primary`/
+     `secondary` swapped vs the requested spec. Fixed to **primary `#EC4899`
+     (pink)**, secondary `#8B5CF6` (purple) — the theme now reads as candy/pink.
+  2. Hardcoded `KidColors.*` chrome is now palette-driven: kid-home time chip +
+     saved icon + lock, player **Next** button + progress dots, parent gate lock
+     + PIN dots, saved screen, and parent-settings section icons all follow the
+     active theme. (Topic tiles keep their per-category colors by design.)
+- **Player transition glitches — Medium.** Between clips the YouTube IFrame
+  briefly showed its **own chrome** — the *previous* video's title/avatar, the
+  YouTube logo and a related-video card (a tap-out vector for kids). A branded
+  loading overlay (KidKat logo + spinner) now covers the player while a new clip
+  loads, and lifts the moment playback starts (with a 6s fail-safe). This hides
+  the title mismatch and the YouTube logo/related card during transitions.
+- **Demo clips weren't kid-appropriate — Low.** The debug/no-key demo playlist
+  used pop-music placeholders (Rickroll, Gangnam Style, Despacito). Replaced with
+  family-friendly, CC-licensed, embeddable **Blender open movies** (Big Buck
+  Bunny, Caminandes ×2, Spring, Sintel) with real titles. IDs verified via
+  YouTube oEmbed.
+- **API key could silently diverge — Low.** Editing the key field after a
+  successful verify reset the status chip but kept the old saved key. The field
+  now clears the saved key on edit, so the visible text and the key in use can't
+  disagree (treated as "not connected" until re-verified).
+- **Verify button hidden by the keyboard — Low.** The API-key field now submits
+  on the keyboard's **Go** action, so a manually-typed key can be verified
+  without reaching the button behind the soft keyboard.
+
+### Verified working (no change needed)
+- Swipe up = next / swipe down = previous (the earlier "broken swipe" report was
+  a test-harness artifact: a stray, ANR-ing app stole focus on the shared
+  emulator and screencaps/uiautomator returned stale frames).
+- Finite session → "Great job!" break screen; **daily time-limit lock**
+  ("That's all for today!"); bookmark + Saved + Play-all; omit-watched and
+  watch-time accrual; parent PIN gate + dashboard.
+
+### Notes / not changed
+- 16:9 clips letterbox in the player — this is intentional for vertical Shorts
+  (9:16 fills); cropping would clip real Shorts.
+- The YouTube logo can still appear when a child **manually pauses** — YouTube's
+  ToS requires the branding/click-through, so it can't be fully removed; the
+  transition overlay handles the common (between-clips) exposure.
+
+### Tests
+- Added `test/bugfix_regression_test.dart`: Candy palette is pink-forward, demo
+  clips are the kid-safe Blender set, and `BigButton` stays legible on light/dark
+  backgrounds. Full suite: **50 tests passing**; `flutter analyze` clean.
+
 ## [0.5.0] — Working swipe, saved videos, omit-watched (emulator-tested)
 
 ### Player gestures (swipe up/down) — fixed & verified on an Android emulator

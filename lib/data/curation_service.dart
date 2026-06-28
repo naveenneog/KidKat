@@ -8,15 +8,14 @@ import 'youtube_api.dart';
 
 /// A small built-in playlist used **only for debug testing** (and when no API
 /// key is set in a debug build) so the player + gestures can be exercised
-/// without configuring a YouTube Data API key. Big Buck Bunny is an open,
-/// kid-friendly film; the rest are popular, reliably embeddable clips.
+/// without configuring a YouTube Data API key. These are family-friendly,
+/// CC-licensed Blender open movies — embeddable and safe for kids.
 final List<KidVideo> kDemoVideos = [
-  _demo('aqz-KE-bpKQ', 'Big Buck Bunny (demo)', 'Blender Foundation'),
-  _demo('dQw4w9WgXcQ', 'Demo clip 2', 'Demo'),
-  _demo('9bZkp7q19f0', 'Demo clip 3', 'Demo'),
-  _demo('e-ORhEE9VVg', 'Demo clip 4', 'Demo'),
-  _demo('kJQP7kiw5Fk', 'Demo clip 5', 'Demo'),
-  _demo('60ItHLz5WEA', 'Demo clip 6', 'Demo'),
+  _demo('aqz-KE-bpKQ', 'Big Buck Bunny', 'Blender'),
+  _demo('Z4C82eyhwgU', 'Caminandes: Gran Dillama', 'Blender'),
+  _demo('SkVqJ1SGeL0', 'Caminandes: Llamigos', 'Blender'),
+  _demo('WhWc3b3KhnY', 'Spring', 'Blender Studio'),
+  _demo('eRsGyueVLvQ', 'Sintel', 'Blender'),
 ];
 
 KidVideo _demo(String id, String title, String channel) => KidVideo(
